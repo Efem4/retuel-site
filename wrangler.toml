@@ -1,0 +1,11 @@
+name = "retuel-site"
+compatibility_date = "2024-09-23"
+main = "worker.js"
+
+[assets]
+directory = "."
+
+[[d1_databases]]
+binding = "DB"
+database_name = "retuel"
+database_id = "8b939102-6b50-44b5-95a0-82d4469f8533"

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>re-tuel — OG Image Generator</title>
+<style>
+  body { margin: 0; background: #1a1a16; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; gap: 24px; font-family: system-ui; }
+  canvas { width: 600px; height: 315px; border: 1px solid #333; border-radius: 4px; }
+  button { background: #f0ede6; color: #111109; border: none; padding: 12px 32px; font-size: 14px; letter-spacing: .08em; border-radius: 4px; cursor: pointer; font-family: system-ui; }
+  button:hover { opacity: .85; }
+  p { color: #888; font-size: 13px; margin: 0; }
+</style>
+</head>
+<body>
+<canvas id="c" width="1200" height="630"></canvas>
+<button onclick="dl()">↓ og.png olarak indir</button>
+<p>İndirilen dosyayı <code style="color:#bbb">public/og.png</code> olarak kaydet, sonra deploy et.</p>
+<script>
+var c = document.getElementById('c');
+var ctx = c.getContext('2d');
+
+function draw() {
+  // Background
+  ctx.fillStyle = '#f0ede6';
+  ctx.fillRect(0, 0, 1200, 630);
+
+  // Subtle left line
+  ctx.strokeStyle = '#c2bfb5';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(80, 315);
+  ctx.lineTo(220, 315);
+  ctx.stroke();
+
+  // re-tuel
+  ctx.fillStyle = '#111109';
+  ctx.font = '400 108px Georgia, "Times New Roman", serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.letterSpacing = '6px';
+  ctx.fillText('re-tuel', 600, 295);
+
+  // subtitle
+  ctx.fillStyle = '#5a5855';
+  ctx.font = '400 16px Arial, Helvetica, sans-serif';
+  ctx.letterSpacing = '10px';
+  ctx.fillText('ISTANBUL  ·  CLEAN LIP CARE', 600, 375);
+}
+
+draw();
+
+function dl() {
+  var a = document.createElement('a');
+  a.download = 'og.png';
+  a.href = c.toDataURL('image/png');
+  a.click();
+}
+</script>
+</body>
+</html>

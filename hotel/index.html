@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Hotel Manager</title>
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap');
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; background:#fff4ec; color:#5a463c; font-family:'Nunito',system-ui,Arial,sans-serif; overflow:hidden; }
+#app { display:flex; flex-direction:column; height:100vh; }
+
+/* TOP BAR */
+#topbar { background:linear-gradient(180deg,#fffaf6,#fff1e8); border-bottom:2px solid #f0ddd0; box-shadow:0 4px 18px rgba(120,80,55,.10); padding:0 14px; display:flex; align-items:center; gap:6px; flex-shrink:0; height:58px; }
+#topbar h1 { font-family:'Fredoka',sans-serif; font-size:16px; font-weight:700; letter-spacing:.5px; color:#f06b48; white-space:nowrap; margin-right:8px; }
+.stat { display:flex; flex-direction:column; align-items:center; padding:6px 11px; border-radius:13px; background:#fffaf6; border:1px solid #f3e2d4; box-shadow:0 3px 0 #f0ddd0; min-width:58px; }
+.stat .lbl { font-size:8px; color:#b39b8c; text-transform:uppercase; letter-spacing:1px; margin-bottom:2px; font-weight:800; }
+.stat .val { font-family:'Fredoka',sans-serif; font-size:14px; font-weight:600; color:#5a463c; }
+.stat.money .val { color:#2ba37c; }
+.stat.stars .val { color:#f0a92e; font-size:12px; }
+.stat.happy .val { color:#f0794a; }
+#day-bar-wrap { flex:1; max-width:120px; padding:4px 0; }
+#day-bar-wrap .lbl { font-size:8px; color:#b39b8c; margin-bottom:4px; letter-spacing:1px; font-weight:800; }
+#day-bar { height:6px; background:#fbe3d4; border-radius:99px; overflow:hidden; }
+#day-bar-fill { height:100%; background:linear-gradient(90deg,#ffb43d,#ff8d6b); width:0%; border-radius:99px; transition:width .3s; }
+.speed-group { display:flex; gap:3px; }
+.sp-btn { padding:6px 11px; background:#fff1e8; border:1px solid #f0ddd0; color:#b39b8c; cursor:pointer; border-radius:10px; font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; transition:all .15s; }
+.sp-btn:hover { background:#ffe3cf; color:#8a7060; }
+.sp-btn.on { background:linear-gradient(135deg,#ff8d6b,#f06b48); border-color:#f06b48; color:#fff; box-shadow:0 3px 0 #d4572f; }
+.topbar-btn { padding:8px 14px; border:none; cursor:pointer; border-radius:12px; font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; white-space:nowrap; transition:all .15s; }
+#btnSave { background:#fffaf6; color:#5a8fd4; border:1px solid #d3e2f5; box-shadow:0 3px 0 #d3e2f5; }
+#btnSave:hover { filter:brightness(1.03); }
+#btnNewGame { background:#fffaf6; color:#b39b8c; border:1px solid #f0ddd0; box-shadow:0 3px 0 #f0ddd0; }
+#btnNewGame:hover { color:#e2654a; border-color:#f3b8a8; box-shadow:0 3px 0 #f3b8a8; }
+#btnAddFloor { background:linear-gradient(135deg,#5ec98a,#3fae6e); color:#fff; margin-left:4px; box-shadow:0 3px 0 #2f9159; }
+#btnAddFloor:hover { filter:brightness(1.05); }
+#saveFlash { font-size:10px; color:#5a8fd4; opacity:0; transition:opacity .5s; font-weight:800; }
+
+/* MAIN */
+#main { display:flex; flex:1; overflow:hidden; }
+
+/* SIDEBAR */
+#sidebar { position:fixed; bottom:56px; left:0; right:0; width:100%; max-height:62dvh; height:0; overflow:hidden; background:linear-gradient(180deg,#fffaf6,#fff1e8); border-top:2px solid #f0ddd0; box-shadow:0 -6px 26px rgba(120,80,55,.16); transition:height .28s cubic-bezier(.4,0,.2,1); z-index:200; display:flex; flex-direction:column; scrollbar-width:thin; scrollbar-color:#f0ddd0 #fff4ec; }
+#sidebar.mob-open { height:62dvh; overflow-y:auto; }
+.section { padding:9px 9px; border-bottom:1px solid #f6e6d9; }
+.section-title { font-size:8px; color:#b39b8c; text-transform:uppercase; letter-spacing:1.4px; margin-bottom:7px; border-left:3px solid #ff8d6b; padding-left:6px; font-weight:800; }
+.tbtn { display:flex; align-items:center; gap:6px; width:100%; padding:8px 9px; margin-bottom:3px; background:#fffaf6; border:1px solid #f3e2d4; color:#8a7060; cursor:pointer; border-radius:10px; font-family:'Fredoka',sans-serif; font-size:11.5px; font-weight:500; transition:all .15s; }
+.tbtn:hover { background:#ffe9db; color:#5a463c; border-color:#f0c8b2; }
+.tbtn.active { background:linear-gradient(135deg,#ffd9c2,#ffc6a8); border-color:#ff9d76; color:#c0542f; box-shadow:0 2px 0 #f0b496; }
+.tbtn .cost { font-size:10px; color:#b39b8c; margin-left:auto; font-weight:700; }
+.tbtn .sc { font-size:9px; background:rgba(63,174,110,.18); color:#2ba37c; border-radius:8px; padding:1px 6px; margin-left:4px; font-weight:800; }
+.tbtn.active .cost { color:#c0703f; }
+
+/* PRICE PANEL */
+.price-row { display:flex; align-items:center; justify-content:space-between; padding:5px 0; border-bottom:1px solid #f6e6d9; font-size:11px; }
+.price-row:last-child { border-bottom:none; }
+.price-row .pname { color:#8a7060; flex:1; font-weight:600; }
+.price-controls { display:flex; align-items:center; gap:5px; }
+.price-controls button { width:20px; height:20px; background:#fff1e8; border:1px solid #f0ddd0; color:#8a7060; cursor:pointer; border-radius:6px; font-size:13px; line-height:1; display:flex; align-items:center; justify-content:center; transition:all .15s; }
+.price-controls button:hover { background:#ffd9c2; border-color:#ff9d76; color:#c0542f; }
+.price-val { font-family:'Fredoka',sans-serif; font-size:11px; color:#2ba37c; font-weight:600; min-width:40px; text-align:center; }
+
+/* INFO PANEL */
+#infopanel { padding:11px 9px; font-size:11px; color:#9a8478; line-height:1.8; flex:1; }
+#infopanel b { color:#5a463c; font-weight:800; }
+
+/* STAR HINT */
+#star-hint { padding:9px; font-size:10px; color:#a08a7c; line-height:1.8; border-top:1px solid #f6e6d9; }
+#star-hint b { color:#f0a92e; }
+
+/* GUEST PANEL */
+#happy-wrap { position:relative; }
+#happy-wrap .stat { cursor:pointer; user-select:none; }
+#happy-wrap .stat:hover { border-color:#ffb894; background:#fff3ea; }
+#happy-wrap .stat.open { border-color:#ff9d76; background:#ffeadd; }
+#guest-panel { display:none; position:absolute; top:calc(100% + 10px); left:50%; transform:translateX(-50%); width:214px; background:#fffaf6; border:1px solid #f3e2d4; border-radius:16px; padding:13px; box-shadow:0 12px 34px rgba(120,80,55,.22); z-index:500; }
+#guest-panel.open { display:block; }
+.gp-header { display:flex; justify-content:space-between; align-items:center; padding-bottom:9px; margin-bottom:9px; border-bottom:1px solid #f3e2d4; }
+.gp-header .gp-count { font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; color:#5a463c; }
+.gp-header .gp-avg { font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; color:#f0794a; }
+.gp-row { display:flex; align-items:center; justify-content:space-between; padding:5px 0; border-bottom:1px solid #f6e6d9; font-size:12px; }
+.gp-row:last-child { border-bottom:none; }
+.gp-row .gp-label { color:#8a7060; display:flex; align-items:center; gap:6px; font-weight:600; }
+.gp-row .gp-bar-wrap { flex:1; margin:0 10px; height:6px; background:#fbe3d4; border-radius:99px; overflow:hidden; }
+.gp-row .gp-bar { height:100%; border-radius:99px; transition:width .4s; }
+.gp-row .gp-num { font-family:'Fredoka',sans-serif; font-weight:600; min-width:18px; text-align:right; color:#5a463c; }
+.gp-row.hungry .gp-bar { background:#e8775c; } .gp-row.tired .gp-bar { background:#5a9fd4; }
+.gp-row.bored .gp-bar { background:#f0a92e; } .gp-row.unhappy .gp-bar { background:#ec6b6b; }
+.gp-row.hungry .gp-num { color:#d4593c; } .gp-row.tired .gp-num { color:#4a8fc4; }
+.gp-row.bored .gp-num { color:#d4912e; } .gp-row.unhappy .gp-num { color:#d44c4c; }
+
+/* CANVAS */
+#canvas-area { flex:1; overflow:auto; background:radial-gradient(120% 90% at 50% 0%,#ffe0cd 0%,#ffeadd 38%,#fff4ec 72%); display:flex; align-items:flex-end; justify-content:center; }
+#gameCanvas { display:block; cursor:crosshair; touch-action:none; }
+
+/* CONFIRM MODAL */
+#confirm-overlay { display:none; position:fixed; inset:0; background:rgba(80,55,40,.30); backdrop-filter:blur(3px); z-index:900; align-items:center; justify-content:center; }
+#confirm-overlay.show { display:flex; }
+#confirm-box { background:#fffaf6; border:1px solid #f3e2d4; border-radius:20px; padding:24px; max-width:320px; width:90%; box-shadow:0 18px 48px rgba(120,80,55,.3); animation:popIn .15s ease; }
+@keyframes popIn { from { transform:scale(.9); opacity:0; } to { transform:scale(1); opacity:1; } }
+#confirm-box .cb-title { font-family:'Fredoka',sans-serif; font-size:15px; font-weight:600; color:#5a463c; margin-bottom:8px; }
+#confirm-box .cb-msg { font-size:12.5px; color:#8a7060; line-height:1.6; margin-bottom:18px; }
+#confirm-box .cb-btns { display:flex; gap:8px; justify-content:flex-end; }
+#confirm-box .cb-btns button { padding:9px 20px; border:none; border-radius:12px; font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; cursor:pointer; transition:filter .15s; }
+#confirm-box .cb-btns button:hover { filter:brightness(1.05); }
+#confirm-box .cb-no { background:#fff1e8; color:#8a7060; box-shadow:0 3px 0 #f0ddd0; }
+#confirm-box .cb-yes { background:linear-gradient(135deg,#ff8d6b,#f06b48); color:#fff; box-shadow:0 3px 0 #d4572f; }
+
+/* TOOL TIP */
+#tool-tip { position:fixed; bottom:66px; left:50%; transform:translateX(-50%); background:#4c3a31; color:#fff6ef; font-family:'Fredoka',sans-serif; font-size:12px; font-weight:500; letter-spacing:.2px; padding:7px 18px; border-radius:99px; box-shadow:0 6px 18px rgba(120,80,55,.4); pointer-events:none; white-space:nowrap; z-index:400; opacity:0; transition:opacity .15s; }
+#tool-tip.show { opacity:1; }
+
+/* TOAST */
+#toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#4c3a31; color:#ffd08a; padding:10px 24px; border-radius:99px; font-family:'Fredoka',sans-serif; font-size:13px; font-weight:600; box-shadow:0 8px 24px rgba(120,80,55,.4); pointer-events:none; opacity:0; transition:opacity .3s; z-index:999; white-space:nowrap; }
+#toast.show { opacity:1; }
+
+/* BOTTOM BAR */
+#mob-bar { display:flex; height:56px; align-items:center; background:linear-gradient(180deg,#fffaf6,#fff1e8); border-top:2px solid #f0ddd0; padding:0 10px; gap:6px; overflow-x:auto; flex-shrink:0; -webkit-overflow-scrolling:touch; scrollbar-width:none; box-shadow:0 -4px 18px rgba(120,80,55,.10); }
+#mob-bar::-webkit-scrollbar { display:none; }
+.mob-btn { flex-shrink:0; padding:8px 12px; background:#fffaf6; border:1px solid #f3e2d4; color:#8a7060; border-radius:12px; font-size:15px; cursor:pointer; white-space:nowrap; -webkit-tap-highlight-color:transparent; transition:all .15s; box-shadow:0 2px 0 #f0ddd0; }
+.mob-btn:active { background:#ffe3cf; transform:translateY(2px); box-shadow:0 0 0 #f0ddd0; }
+.mob-btn.active { background:linear-gradient(135deg,#ffd9c2,#ffc6a8); border-color:#ff9d76; color:#c0542f; box-shadow:0 2px 0 #f0b496; }
+.mob-sep { width:2px; background:#f3e2d4; flex-shrink:0; align-self:stretch; margin:0 3px; border-radius:2px; }
+#mob-overlay { display:none; position:fixed; inset:0; background:rgba(80,55,40,.28); z-index:199; backdrop-filter:blur(2px); }
+#mob-overlay.show { display:block; }
+
+/* PRICE POPUP */
+#price-popup { position:fixed; bottom:56px; left:0; right:0; max-width:420px; margin:0 auto; background:#fffaf6; border:1px solid #f3e2d4; border-radius:22px 22px 0 0; padding:16px; box-shadow:0 -10px 36px rgba(120,80,55,.26); z-index:250; transform:translateY(calc(100% + 60px)); transition:transform .26s cubic-bezier(.4,0,.2,1); }
+#price-popup.open { transform:translateY(0); }
+#price-popup .pp-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding-bottom:9px; border-bottom:1px solid #f3e2d4; }
+#price-popup .pp-head span { font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; color:#5a463c; letter-spacing:.3px; }
+#price-popup .pp-close { background:none; border:none; color:#b39b8c; cursor:pointer; font-size:18px; line-height:1; padding:0 2px; transition:color .15s; }
+#price-popup .pp-close:hover { color:#5a463c; }
+#price-popup .pp-hint { font-size:9.5px; color:#b39b8c; margin-top:9px; line-height:1.5; }
+
+@media (max-width: 768px) {
+  #app { height:100dvh; }
+  #topbar { height:auto; flex-wrap:wrap; gap:6px 8px; padding:8px 10px; }
+  #topbar h1 { font-size:13px; letter-spacing:.5px; }
+  .stat { padding:4px 8px; min-width:46px; }
+  .stat .val { font-size:12px; } .stat .lbl { font-size:7px; }
+  #day-bar-wrap, #btnSave, #btnNewGame, #btnAddFloor, #saveFlash { display:none; }
+  .speed-group { margin-left:auto; }
+  #canvas-area { flex:1; overflow-x:hidden; overflow-y:auto; -webkit-overflow-scrolling:touch; display:flex; align-items:flex-end; justify-content:center; }
+  #toast { bottom:74px; }
+}
+
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="topbar">
+    <h1>🏨 HOTEL MANAGER</h1>
+    <div class="stat money"><span class="lbl">Para</span><span class="val" id="s-money">$50,000</span></div>
+    <div class="stat"><span class="lbl">Misafir</span><span class="val" id="s-guests">0</span></div>
+    <div class="stat stars"><span class="lbl">Otel Yıldızı</span><span class="val" id="s-stars">☆☆☆☆☆</span></div>
+    <div id="happy-wrap">
+      <div class="stat happy" onclick="toggleGuestPanel()">
+        <span class="lbl">Mutluluk ▾</span>
+        <span class="val" id="s-happy">—</span>
+      </div>
+      <div id="guest-panel">
+        <div class="gp-header">
+          <span class="gp-count" id="gp-count">👥 0 misafir</span>
+          <span class="gp-avg"   id="gp-avg">—</span>
+        </div>
+        <div class="gp-row hungry">
+          <span class="gp-label">🍽 Acıktı</span>
+          <div class="gp-bar-wrap"><div class="gp-bar" id="gp-bar-hungry"></div></div>
+          <span class="gp-num" id="gp-num-hungry">0</span>
+        </div>
+        <div class="gp-row tired">
+          <span class="gp-label">😴 Yorgun</span>
+          <div class="gp-bar-wrap"><div class="gp-bar" id="gp-bar-tired"></div></div>
+          <span class="gp-num" id="gp-num-tired">0</span>
+        </div>
+        <div class="gp-row bored">
+          <span class="gp-label">🎮 Sıkıldı</span>
+          <div class="gp-bar-wrap"><div class="gp-bar" id="gp-bar-bored"></div></div>
+          <span class="gp-num" id="gp-num-bored">0</span>
+        </div>
+        <div class="gp-row unhappy">
+          <span class="gp-label">😡 Mutsuz</span>
+          <div class="gp-bar-wrap"><div class="gp-bar" id="gp-bar-unhappy"></div></div>
+          <span class="gp-num" id="gp-num-unhappy">0</span>
+        </div>
+      </div>
+    </div>
+    <div class="stat"><span class="lbl">Gün</span><span class="val" id="s-day">1</span></div>
+    <div class="stat money"><span class="lbl">Günlük Gelir</span><span class="val" id="s-income">$0</span></div>
+    <div id="day-bar-wrap"><div class="lbl" id="day-phase-lbl">☀️ Gündüz</div><div id="day-bar"><div id="day-bar-fill"></div></div></div>
+    <div class="speed-group">
+      <button class="sp-btn on" onclick="setSpeed(1)" id="sp1">1×</button>
+      <button class="sp-btn"   onclick="setSpeed(2)" id="sp2">2×</button>
+      <button class="sp-btn"   onclick="setSpeed(4)" id="sp3">4×</button>
+    </div>
+    <span id="saveFlash">💾 kaydedildi</span>
+    <button class="topbar-btn" id="btnSave"     onclick="saveGame()">💾 Kaydet</button>
+    <button class="topbar-btn" id="btnNewGame"  onclick="newGame()">🗑 Yeni Oyun</button>
+    <button class="topbar-btn" id="btnAddFloor" onclick="doAddFloor()">+ Kat  $2,000</button>
+  </div>
+
+  <div id="main">
+    <div id="sidebar">
+      <div class="section">
+        <div class="section-title">Araçlar</div>
+        <button class="tbtn" id="btn-cursor"   onclick="setTool('cursor')">👆 Seç / Bilgi</button>
+        <button class="tbtn" id="btn-demolish" onclick="setTool('demolish')">🔨 Yık  <span class="cost">%50 geri</span></button>
+      </div>
+      <div class="section">
+        <div class="section-title">Altyapı</div>
+        <button class="tbtn" id="btn-corridor"  onclick="setTool('corridor')">🚶 Koridor   <span class="cost">$100</span></button>
+        <button class="tbtn" id="btn-elevator"  onclick="setTool('elevator')">🛗 Asansör  <span class="cost">$1,500</span></button>
+        <button class="tbtn" id="btn-stairs"    onclick="setTool('stairs')">🪜 Merdiven <span class="cost">$400</span></button>
+      </div>
+      <div class="section">
+        <div class="section-title">Lobi</div>
+        <button class="tbtn" id="btn-reception" onclick="setTool('reception')">🛎 Resepsiyon <span class="cost">$2,000</span></button>
+      </div>
+      <div class="section">
+        <div class="section-title">Odalar</div>
+        <button class="tbtn" id="btn-standard"  onclick="setTool('standard')">🛏 Standart <span class="cost">$800</span></button>
+        <button class="tbtn" id="btn-deluxe"    onclick="setTool('deluxe')">🛏 Deluxe   <span class="cost">$1,500</span></button>
+        <button class="tbtn" id="btn-suite"     onclick="setTool('suite')">👑 Suit     <span class="cost">$4,000</span></button>
+      </div>
+      <div class="section">
+        <div class="section-title">Hizmetler</div>
+        <button class="tbtn" id="btn-restaurant" onclick="setTool('restaurant')">🍽 Restoran <span class="cost">$3,000</span></button>
+        <button class="tbtn" id="btn-bar"        onclick="setTool('bar')">🍹 Bar      <span class="cost">$2,000</span></button>
+        <button class="tbtn" id="btn-pool"       onclick="setTool('pool')">🏊 Havuz   <span class="cost">$6,000</span></button>
+      </div>
+      <div class="section">
+        <div class="section-title">Personel (günlük maaş)</div>
+        <button class="tbtn" onclick="hireStaff('receptionist')">💁 Resepsiyoncu <span class="cost">$300/g</span><span class="sc" id="sc-receptionist"></span></button>
+        <button class="tbtn" onclick="hireStaff('maid')">🧹 Temizlikçi   <span class="cost">$200/g</span><span class="sc" id="sc-maid"></span></button>
+        <button class="tbtn" onclick="hireStaff('waiter')">🤵 Garson       <span class="cost">$250/g</span><span class="sc" id="sc-waiter"></span></button>
+        <button class="tbtn" onclick="hireStaff('repairman')">🔧 Tamirci      <span class="cost">$350/g</span><span class="sc" id="sc-repairman"></span></button>
+      </div>
+
+      <!-- STAR HINT -->
+      <div id="star-hint">
+        <b>Yıldız Gereksinimleri</b><br>
+        ★: Resepsiyon + 2 oda<br>
+        ★★: 5 oda + Restoran/Bar<br>
+        ★★★: 8 oda + Restoran + Bar<br>
+        ★★★★: 12 oda + Pool + Suit<br>
+        ★★★★★: 18 oda + tüm hizmetler
+      </div>
+
+      <div class="section">
+        <div class="section-title">Misafir Tipleri</div>
+        <div style="font-size:10px;color:#666;line-height:1.9">
+          🧳 <b style="color:#27AE60">Turist</b> — uzun konaklama<br>
+          💼 <b style="color:#2980B9">İş İnsanı</b> — 2★+ kısa, yüksek bütçe<br>
+          👨‍👩‍👧 <b style="color:#8E44AD">Aile</b> — 2★+ havuz sever<br>
+          ⭐ <b style="color:#F39C12">VIP</b> — 4★+ suit ister, 2.5× ödeme
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">İhtiyaçlar &amp; Arıza</div>
+        <div style="font-size:10px;color:#666;line-height:1.9">
+          <span style="color:#e74c3c">●</span> Açlık — Restoran/Bar<br>
+          <span style="color:#3498db">●</span> Yorgunluk — Oda<br>
+          <span style="color:#f39c12">●</span> Eğlence — Havuz/Bar<br>
+          ⚠️ Arıza — Tamirci gönder
+        </div>
+      </div>
+
+      <div id="infopanel"><b>Hotel Manager</b><br><br>Yıldız kazan, farklı misafirler çek, arızaları tamir et.</div>
+    </div>
+
+    <div id="canvas-area">
+      <canvas id="gameCanvas"></canvas>
+    </div>
+  </div>
+
+  <!-- MOBILE BOTTOM BAR -->
+  <div id="mob-bar">
+    <button class="mob-btn active" id="mob-corridor"    onclick="setTool('corridor')">🚶</button>
+    <button class="mob-btn"        id="mob-elevator"    onclick="setTool('elevator')">🛗</button>
+    <button class="mob-btn"        id="mob-stairs"      onclick="setTool('stairs')">🪜</button>
+    <div class="mob-sep"></div>
+    <button class="mob-btn"        id="mob-reception"   onclick="setTool('reception')">🛎</button>
+    <button class="mob-btn"        id="mob-standard"    onclick="setTool('standard')">🛏</button>
+    <button class="mob-btn"        id="mob-deluxe"      onclick="setTool('deluxe')">🛏✨</button>
+    <button class="mob-btn"        id="mob-suite"       onclick="setTool('suite')">👑</button>
+    <div class="mob-sep"></div>
+    <button class="mob-btn"        id="mob-restaurant"  onclick="setTool('restaurant')">🍽</button>
+    <button class="mob-btn"        id="mob-bar-tool"    onclick="setTool('bar')">🍹</button>
+    <button class="mob-btn"        id="mob-pool"        onclick="setTool('pool')">🏊</button>
+    <div class="mob-sep"></div>
+    <button class="mob-btn"        id="mob-cursor"      onclick="setTool('cursor')">👆</button>
+    <button class="mob-btn"        id="mob-demolish"    onclick="setTool('demolish')">🔨</button>
+    <div class="mob-sep"></div>
+    <button class="mob-btn" onclick="hireStaff('receptionist')" style="color:#5DADE2">💁</button>
+    <button class="mob-btn" onclick="hireStaff('maid')"         style="color:#A9CCE3">🧹</button>
+    <button class="mob-btn" onclick="hireStaff('waiter')"       style="color:#FAD7A0">🤵</button>
+    <button class="mob-btn" onclick="hireStaff('repairman')"    style="color:#E59866">🔧</button>
+    <button class="mob-btn" onclick="doAddFloor()"              style="color:#2ecc71">+Kat</button>
+    <div class="mob-sep"></div>
+    <button class="mob-btn" onclick="togglePricePopup()"        style="color:#00d4aa" id="mob-price">💰</button>
+    <button class="mob-btn" onclick="saveGame()"                style="color:#5DADE2">💾</button>
+    <button class="mob-btn" onclick="newGame()"                 style="color:#e74c3c">🗑</button>
+    <button class="mob-btn" onclick="toggleMobSidebar()"        style="color:#f39c12" id="mob-menu">☰</button>
+  </div>
+</div>
+
+<div id="mob-overlay" onclick="closeAllPanels()"></div>
+
+<div id="price-popup">
+  <div class="pp-head">
+    <span>💰 Fiyatlandırma</span>
+    <button class="pp-close" onclick="togglePricePopup()">✕</button>
+  </div>
+  <div class="price-row"><span class="pname">🛎 Resepsiyon</span><div class="price-controls"><button onclick="chPrice('reception',-10)">−</button><span class="price-val" id="pv-reception">$40</span><button onclick="chPrice('reception',+10)">+</button></div></div>
+  <div class="price-row"><span class="pname">🛏 Standart</span><div class="price-controls"><button onclick="chPrice('standard',-10)">−</button><span class="price-val" id="pv-standard">$90</span><button onclick="chPrice('standard',+10)">+</button></div></div>
+  <div class="price-row"><span class="pname">🛏 Deluxe</span><div class="price-controls"><button onclick="chPrice('deluxe',-10)">−</button><span class="price-val" id="pv-deluxe">$170</span><button onclick="chPrice('deluxe',+10)">+</button></div></div>
+  <div class="price-row"><span class="pname">👑 Suit</span><div class="price-controls"><button onclick="chPrice('suite',-20)">−</button><span class="price-val" id="pv-suite">$350</span><button onclick="chPrice('suite',+20)">+</button></div></div>
+  <div class="price-row"><span class="pname">🍽 Restoran</span><div class="price-controls"><button onclick="chPrice('restaurant',-5)">−</button><span class="price-val" id="pv-restaurant">$55</span><button onclick="chPrice('restaurant',+5)">+</button></div></div>
+  <div class="price-row"><span class="pname">🍹 Bar</span><div class="price-controls"><button onclick="chPrice('bar',-5)">−</button><span class="price-val" id="pv-bar">$45</span><button onclick="chPrice('bar',+5)">+</button></div></div>
+  <div class="price-row"><span class="pname">🏊 Havuz</span><div class="price-controls"><button onclick="chPrice('pool',-5)">−</button><span class="price-val" id="pv-pool">$90</span><button onclick="chPrice('pool',+5)">+</button></div></div>
+  <div class="pp-hint">Yüksek fiyat = az misafir &nbsp;·&nbsp; Düşük fiyat = doluluk artar</div>
+</div>
+
+<div id="tool-tip"></div>
+<div id="toast"></div>
+<div id="confirm-overlay">
+  <div id="confirm-box">
+    <div class="cb-title" id="cb-title"></div>
+    <div class="cb-msg"   id="cb-msg"></div>
+    <div class="cb-btns">
+      <button class="cb-no"  onclick="resolveConfirm(false)">İptal</button>
+      <button class="cb-yes" onclick="resolveConfirm(true)">Değiştir</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/game.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>
