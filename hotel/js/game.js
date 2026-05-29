@@ -92,6 +92,8 @@ let guestIdCtr=0, staffIdCtr=0;
 let nextSpawn=6, dailyIncome=0;
 let dailyIncomeRoom=0, dailyIncomeAmenity=0, dailyIncomeReception=0;
 let demandScore=1;
+let reputation=0.5;   // 0‒1: birikimli itibar skoru
+let occupancyRate=0;  // 0‒1: anlık doluluk oranı
 let hovCell=null, toastTimer=null;
 let autoSaveTimer=60;
 let prices={...BASE_PRICES};
@@ -188,9 +190,13 @@ function calcDemandScore(){
   for(const rt of rTypes) pricePressure+=((prices[rt]||BASE_PRICES[rt])/BASE_PRICES[rt])-1;
   pricePressure/=rTypes.length;
 
+  // İtibar uzun vadeli talebi taşır
+  const repBonus = reputation * 0.25;
+
   const score=1
     +hotelStars*0.25
-    +avgHappy*0.40
+    +avgHappy*0.30
+    +repBonus
     +Math.min(cleanFreeRooms,10)*0.04
     -dirtyRooms*0.06
     -brokenRooms*0.10
@@ -199,12 +205,39 @@ function calcDemandScore(){
   return Math.max(0.2, score);
 }
 
+// Anlık doluluk oranı
+function calcOccupancyRate(){
+  let occupied=0, total=0;
+  for(let f=0;f<FLOORS;f++) for(let c=0;c<COLS;c++){
+    const cell=grid[f][c];
+    if([T.STANDARD,T.DELUXE,T.SUITE].includes(cell.type)){
+      total++;
+      if(cell.occupied) occupied++;
+    }
+  }
+  return total>0?occupied/total:0;
+}
+
+// Misafir ayrılırken itibarı güncelle
+function updateReputation(finalHappy){
+  // İyi ayrılış → itibar yükselir (1'e doğru yavaşlar)
+  // Kötü ayrılış → itibar düşer (0'a doğru yavaşlar)
+  let delta=0;
+  if(finalHappy>0.65)       delta=+0.04*(1-reputation);
+  else if(finalHappy<0.30)  delta=-0.06*reputation;
+  reputation=Math.max(0,Math.min(1,reputation+delta));
+
+  // Milestone toastları
+  if(reputation>=0.80&&reputation-delta<0.80) toast('⭐ İtibarınız yükseliyor! Misafirler sizi seviyor.');
+  if(reputation<=0.25&&reputation-delta>0.25) toast('📉 İtibar düşüyor! Servis kalitesine dikkat edin.');
+}
+
 // ═══════════════════════════════════════════
 //  SAVE / LOAD
 // ═══════════════════════════════════════════
 function saveGame(silent=false){
   const data={
-    v:4, money, day, gameTime, dailyIncome, dailyIncomeRoom, dailyIncomeAmenity, dailyIncomeReception, FLOORS, COLS, prices,
+    v:4, money, day, gameTime, dailyIncome, dailyIncomeRoom, dailyIncomeAmenity, dailyIncomeReception, reputation, FLOORS, COLS, prices,
     grid:grid.map(f=>f.map(c=>({t:c.type,d:c.dirty?1:0,b:c.broken?1:0}))),
     staff:staffArr.map(s=>({type:s.type,col:s.col,floor:s.floor})),
   };
@@ -218,6 +251,7 @@ function loadGame(){
     const d=JSON.parse(raw); if(!d.v||d.v<4) return false;
     money=d.money; day=d.day; gameTime=d.gameTime||0; dailyIncome=d.dailyIncome||0;
     dailyIncomeRoom=d.dailyIncomeRoom||0; dailyIncomeAmenity=d.dailyIncomeAmenity||0; dailyIncomeReception=d.dailyIncomeReception||0;
+    reputation=d.reputation??0.5;
     FLOORS=d.FLOORS; COLS=d.COLS; prices={...BASE_PRICES,...(d.prices||{})};
     grid=d.grid.map(f=>f.map(c=>({type:c.t,dirty:c.d===1,broken:c.b===1,occupied:false,gId:null,sId:null})));
     staffArr=[]; guestIdCtr=0; staffIdCtr=0;
@@ -478,8 +512,9 @@ function getSpawnableTypes(){
 function guestAcceptsPrice(roomType,priceMult){
   const base=BASE_PRICES[roomType]||90;
   const priceRatio=(prices[roomType]||base)/base;
-  // VIP/business (yüksek priceMult) → fiyata daha toleranslı
-  const effectiveRatio=priceRatio/priceMult;
+  // VIP/business toleransı + itibar bonusu (yüksek itibar → %20'ye kadar ek tolerans)
+  const repTolerance=priceMult*(1+reputation*0.20);
+  const effectiveRatio=priceRatio/repTolerance;
   return Math.random()<Math.max(0.15,Math.min(1,1/effectiveRatio));
 }
 
@@ -569,7 +604,8 @@ function updateGuest(g,dt){
         g.state='in_room'; g.stayT=g.stayFor;
         g.happy=Math.min(1,g.happy+0.12);
         if(!g.incomeEarned){
-          earn((prices[g.romType]||0)*td.priceMult,'room');
+          const repMult=0.80+reputation*0.40; // itibar 0→%80, itibar 1→%120 oda geliri
+          earn((prices[g.romType]||0)*td.priceMult*repMult,'room');
           g.incomeEarned=true;
         }
       } else {
@@ -636,6 +672,7 @@ function updateGuest(g,dt){
     }
 
     case 'checking_out':{
+      updateReputation(g.happy); // misafir ayrılırken itibarı güncelle
       const cell=grid[g.romF]?.[g.romC];
       if(cell&&cell.gId===g.id){cell.occupied=false;cell.dirty=true;cell.gId=null;}
       const p=bfs(g.col,g.floor,Math.floor(COLS/2),0);
@@ -1319,6 +1356,16 @@ function updateUI(){
   const avg=guests.length?guests.reduce((a,g)=>a+g.happy,0)/guests.length:0;
   const hIcon=avg>0.7?'😊':avg>0.45?'😐':'😠';
   document.getElementById('s-happy').textContent=guests.length?hIcon+' '+Math.round(avg*100)+'%':'—';
+  // İtibar ve doluluk — HTML'de element varsa göster
+  const repEl=document.getElementById('s-reputation');
+  if(repEl){
+    const ri=Math.round(reputation*100);
+    const rIcon=reputation>0.75?'🌟':reputation>0.45?'⭐':'💫';
+    repEl.textContent=rIcon+' '+ri+'%';
+  }
+  const occEl=document.getElementById('s-occupancy');
+  if(occEl) occEl.textContent=Math.round(occupancyRate*100)+'%';
+
   updateGuestPanel();
 }
 
@@ -1611,8 +1658,9 @@ function loop(ts){
   }
   prevStars=hotelStars;
 
-  // ── ENGINE: her frame demand hesapla ──
+  // ── ENGINE: her frame hesapla ──
   demandScore=calcDemandScore();
+  occupancyRate=calcOccupancyRate();
 
   // Day change
   if(gameTime>=DAY_LEN){
