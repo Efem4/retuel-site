@@ -2,1906 +2,444 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>re-tuel</title>
-<meta name="description" content="Az ürün. Net iş. İyi his. Istanbul'dan clean lip care.">
-<meta property="og:title" content="re-tuel">
-<meta property="og:description" content="Zaten yapıyordun. re-tuel, günlük bakımı sadece biraz daha iyi, daha dengeli hale getirir.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://re-tuel.com">
-<meta property="og:site_name" content="re-tuel">
-<meta property="og:image" content="https://re-tuel.com/og.svg">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="re-tuel">
-<meta name="twitter:description" content="Zaten yapıyordun. re-tuel, günlük bakımı sadece biraz daha iyi, daha dengeli hale getirir.">
-<meta name="twitter:image" content="https://re-tuel.com/og.svg">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◌</text></svg>">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Hotel Manager</title>
 <style>
 
-/* ============ TOKENS ============ */
-:root {
-  --bg:   #f0ede6;
-  --sur:  #f8f6f2;
-  --txt:  #111109;
-  --mut:  #3d3b37;
-  --bor:  #c2bfb5;
-  --hov:  #eae7e0;
-  --err:  #b03a2e;
-  --d-bg:  #0f0f0c;
-  --d-sur: #1a1a16;
-  --d-txt: #f5f3ed;
-  --d-mut: #c5c3bc;
-  --d-bor: #3a3a34;
-  --d-hov: #222220;
-}
-body.dark {
-  --bg: var(--d-bg); --sur: var(--d-sur); --txt: var(--d-txt);
-  --mut: var(--d-mut); --bor: var(--d-bor); --hov: var(--d-hov);
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  font-family: 'Jost', sans-serif;
-  font-weight: 400;
-  background: var(--bg);
-  color: var(--txt);
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-  transition: background .3s, color .3s;
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap');
+
+:root{
+  /* surfaces */
+  --bg:#fbeede;
+  --cream-0:#fffdfb;
+  --cream-1:#fffaf6;
+  --cream-2:#fff2e9;
+  /* ink */
+  --ink:#5a463c;
+  --ink-soft:#8a7060;
+  --ink-mute:#b39b8c;
+  /* lines */
+  --line:#f0ddd0;
+  --line-soft:#f6e6d9;
+  /* brand */
+  --coral:#f06b48;
+  --coral-light:#ff8d6b;
+  --coral-deep:#d4572f;
+  --coral-wash:#ffe3cf;
+  /* accents */
+  --green:#2ba37c;
+  --gold:#f0a92e;
+  --blue:#5a8fd4;
+  /* shadow */
+  --shadow-card:0 1px 2px rgba(120,80,55,.06), 0 6px 16px rgba(120,80,55,.07);
+  --shadow-pop:0 14px 38px rgba(120,80,55,.20);
+  --radius:13px;
 }
 
-/* ============ NAV ============ */
-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.1rem 2rem;
-  background: var(--bg);
-  border-bottom: 0.5px solid var(--bor);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  transition: background .3s, border-color .3s;
-}
-.logo {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 18px;
-  font-weight: 400;
-  letter-spacing: .04em;
-  color: var(--txt);
-  text-decoration: none;
-  cursor: pointer;
-}
-.nav-right { display: flex; gap: 10px; align-items: center; }
-#survey-nav-btn {
-  font-family: 'Jost', sans-serif;
-  font-weight: 400;
-  font-size: 11px;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--sur);
-  background: var(--txt);
-  border: 0.5px solid var(--txt);
-  border-radius: 2px;
-  padding: 6px 16px;
-  cursor: pointer;
-  transition: opacity .15s;
-}
-#survey-nav-btn:hover { opacity: .75; }
-#theme-tog {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 15px;
-  padding: 4px;
-  opacity: .5;
-  transition: opacity .15s;
-}
-#theme-tog:hover { opacity: 1; }
-#admin-tog { opacity: 0; pointer-events: none; width: 0; padding: 0; overflow: hidden; }
-#admin-tog-UNUSED {
-  font-family: 'Jost', sans-serif;
-  font-weight: 300;
-  font-size: 13px;
-  letter-spacing: .08em;
-  color: var(--mut);
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px 2px;
-  opacity: .35;
-  transition: opacity .15s;
-}
-#admin-tog:hover { opacity: 1; }
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; background:var(--bg); color:var(--ink); font-family:'Nunito',system-ui,Arial,sans-serif; overflow:hidden; -webkit-font-smoothing:antialiased; }
+#app { display:flex; flex-direction:column; height:100vh; }
 
-/* ============ PAGES ============ */
-.page { display: none; }
-.page.active { display: block; }
+/* ───────────────────────── TOP BAR ───────────────────────── */
+#topbar {
+  background:linear-gradient(180deg,#fffdfb,#fff4ec);
+  border-bottom:1px solid var(--line);
+  box-shadow:0 6px 22px rgba(120,80,55,.09);
+  padding:0 16px; display:flex; align-items:center; gap:12px; flex-shrink:0; height:64px;
+}
+.brand { display:flex; align-items:center; gap:9px; margin-right:2px; }
+.brand .logo {
+  width:34px; height:34px; border-radius:11px; flex-shrink:0;
+  background:linear-gradient(140deg,#ff9d76,#f06b48);
+  display:flex; align-items:center; justify-content:center; font-size:18px;
+  box-shadow:0 3px 0 var(--coral-deep), 0 5px 12px rgba(240,107,72,.35);
+}
+.brand h1 { font-family:'Fredoka',sans-serif; font-size:16px; font-weight:600; letter-spacing:.3px; color:var(--ink); white-space:nowrap; line-height:1; }
+.brand h1 span { display:block; font-size:8.5px; font-weight:700; letter-spacing:2px; color:var(--coral); text-transform:uppercase; margin-top:2px; }
 
-/* ============ LANDING ============ */
+/* stat groups + hairline dividers */
+.tb-group { display:flex; align-items:center; gap:7px; }
+.tb-div { width:1px; height:30px; background:var(--line); flex-shrink:0; }
+.tb-spacer { flex:1; }
 
-.hero {
-  min-height: calc(100vh - 52px);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 5rem 2rem 4rem;
-  max-width: 700px;
-  margin: 0 auto;
+.stat {
+  display:flex; flex-direction:column; align-items:center; gap:2px;
+  padding:7px 13px; border-radius:12px;
+  background:var(--cream-0); border:1px solid var(--line-soft);
+  box-shadow:var(--shadow-card); min-width:62px;
 }
-.hero-eyebrow {
-  font-size: 12.5px;
-  font-weight: 500;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--mut);
-  margin-bottom: 2.5rem;
-}
-.hero-headline {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(56px, 9vw, 100px);
-  font-weight: 300;
-  line-height: 1.0;
-  letter-spacing: -.01em;
-  margin-bottom: 2.5rem;
-}
-.hero-headline em { font-style: italic; }
-.hero-divider {
-  width: 32px;
-  height: 0.5px;
-  background: var(--bor);
-  margin-bottom: 2rem;
-}
-.hero-body {
-  font-size: 16.5px;
-  color: var(--mut);
-  line-height: 1.9;
-  max-width: 420px;
-  margin-bottom: 3.5rem;
-}
-.hero-meta { display: flex; gap: 2.5rem; flex-wrap: wrap; }
-.hero-meta-item { font-size: 13px; color: var(--mut); letter-spacing: .04em; }
-.hero-meta-item strong { color: var(--txt); font-weight: 400; display: block; font-size: 15px; margin-bottom: 3px; }
+.stat .lbl { font-size:8px; color:var(--ink-mute); text-transform:uppercase; letter-spacing:1.1px; font-weight:800; }
+.stat .val { font-family:'Fredoka',sans-serif; font-size:15px; font-weight:600; color:var(--ink); line-height:1; }
+.stat.money .val { color:var(--green); }
+.stat.stars .val { color:var(--gold); font-size:13px; letter-spacing:1px; }
+.stat.happy .val { color:var(--coral); }
 
-/* SECTION base */
-section {
-  padding: 6rem 2rem;
-  max-width: 820px;
-  margin: 0 auto;
-  border-top: 0.5px solid var(--bor);
-}
-.sec-label {
-  font-size: 11.5px;
-  font-weight: 500;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--mut);
-  margin-bottom: 2.5rem;
-}
+#day-bar-wrap { min-width:108px; padding:2px 2px 0; }
+#day-bar-wrap .lbl { font-size:8px; color:var(--ink-mute); margin-bottom:5px; letter-spacing:.8px; font-weight:800; text-align:center; }
+#day-bar { height:7px; background:var(--coral-wash); border-radius:99px; overflow:hidden; box-shadow:inset 0 1px 2px rgba(120,80,55,.12); }
+#day-bar-fill { height:100%; background:linear-gradient(90deg,#ffc04d,#ff8d6b); width:0%; border-radius:99px; transition:width .3s; }
 
-/* PHILOSOPHY */
-.phil-lead {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(28px, 4vw, 42px);
-  font-weight: 300;
-  line-height: 1.2;
-  margin-bottom: 3.5rem;
-  max-width: 580px;
-}
-.phil-lead em { font-style: italic; }
-.phil-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-}
-.phil-card {
-  padding: 2rem 1.75rem;
-  background: var(--sur);
-  border: 0.5px solid var(--bor);
-  border-radius: 3px;
-  transition: background .3s, border-color .3s;
-}
-.phil-num {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 12px;
-  color: var(--mut);
-  margin-bottom: 1.5rem;
-  letter-spacing: .06em;
-}
-.phil-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 24px;
-  font-weight: 400;
-  line-height: 1.25;
-  margin-bottom: 1rem;
-}
-.phil-title em { font-style: italic; }
-.phil-desc { font-size: 14.5px; color: var(--mut); line-height: 1.9; }
+.speed-group { display:flex; gap:4px; background:var(--cream-2); padding:4px; border-radius:12px; border:1px solid var(--line-soft); }
+.sp-btn { padding:6px 12px; background:transparent; border:none; color:var(--ink-mute); cursor:pointer; border-radius:9px; font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; transition:all .15s; }
+.sp-btn:hover { color:var(--ink-soft); background:var(--cream-0); }
+.sp-btn.on { background:linear-gradient(135deg,#ff9d76,#f06b48); color:#fff; box-shadow:0 2px 6px rgba(240,107,72,.4); }
 
-/* PRODUCT */
-.prod-intro {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 2.5rem;
-  gap: 2rem;
-  flex-wrap: wrap;
+.topbar-btn { padding:9px 15px; border:none; cursor:pointer; border-radius:12px; font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; white-space:nowrap; transition:all .12s; }
+.topbar-btn:active { transform:translateY(2px); }
+#btnSave { background:var(--cream-0); color:var(--blue); border:1px solid #dbe7f7; box-shadow:0 3px 0 #d3e2f5; }
+#btnSave:hover { background:#f5f9ff; }
+#btnNewGame { background:var(--cream-0); color:var(--ink-mute); border:1px solid var(--line); box-shadow:0 3px 0 var(--line); }
+#btnNewGame:hover { color:var(--coral); border-color:#f3b8a8; box-shadow:0 3px 0 #f3b8a8; }
+#btnSave:active, #btnNewGame:active, #btnAddFloor:active { box-shadow:0 1px 0 currentColor; }
+#btnAddFloor { background:linear-gradient(135deg,#5ec98a,#3fae6e); color:#fff; box-shadow:0 3px 0 #2f9159, 0 5px 12px rgba(63,174,110,.3); }
+#btnAddFloor:hover { filter:brightness(1.05); }
+#btnAddFloor:active { box-shadow:0 1px 0 #2f9159; }
+#saveFlash { font-size:10px; color:var(--blue); opacity:0; transition:opacity .5s; font-weight:800; white-space:nowrap; }
+
+/* ───────────────────────── MAIN ───────────────────────── */
+#main { display:flex; flex:1; overflow:hidden; }
+
+/* ───────────────────────── SIDEBAR ───────────────────────── */
+#sidebar {
+  position:fixed; bottom:56px; left:0; right:0; width:100%; max-height:62vh; height:0; overflow:hidden;
+  background:linear-gradient(180deg,#fffdfb,#fff4ec); border-top:1px solid var(--line);
+  box-shadow:0 -8px 30px rgba(120,80,55,.16); transition:height .28s cubic-bezier(.4,0,.2,1);
+  z-index:200; display:flex; flex-direction:column; scrollbar-width:thin; scrollbar-color:var(--line) transparent;
 }
-.prod-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(28px, 4vw, 44px);
-  font-weight: 300;
-  line-height: 1.1;
+#sidebar.mob-open { height:62vh; overflow-y:auto; }
+#sidebar::-webkit-scrollbar { width:8px; }
+#sidebar::-webkit-scrollbar-thumb { background:var(--line); border-radius:99px; border:2px solid var(--cream-1); }
+
+.section { padding:11px 11px; border-bottom:1px solid var(--line-soft); }
+.section-title { font-size:8.5px; color:var(--ink-mute); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:9px; display:flex; align-items:center; gap:7px; font-weight:800; }
+.section-title::before { content:''; width:3px; height:11px; border-radius:99px; background:linear-gradient(180deg,#ff9d76,#f06b48); }
+
+.tbtn {
+  display:flex; align-items:center; gap:8px; width:100%; padding:9px 11px; margin-bottom:4px;
+  background:var(--cream-0); border:1px solid var(--line-soft); color:var(--ink-soft); cursor:pointer;
+  border-radius:11px; font-family:'Fredoka',sans-serif; font-size:11.5px; font-weight:500;
+  transition:all .14s; box-shadow:0 1px 1px rgba(120,80,55,.04);
 }
-.prod-title em { font-style: italic; }
-.prod-subtitle { font-size: 14.5px; color: var(--mut); line-height: 1.8; max-width: 260px; }
-.prod-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-}
-.prod-card {
-  background: var(--sur);
-  border: 0.5px solid var(--bor);
-  border-radius: 3px;
-  padding: 1.75rem 1.5rem 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: .6rem;
-  transition: background .3s, border-color .3s;
-  position: relative;
-  overflow: hidden;
-}
-.prod-tube {
-  width: 26px;
-  height: 54px;
-  border-radius: 13px 13px 4px 4px;
-  margin-bottom: 1.75rem;
-  transition: background .3s;
-}
-.prod-card.v-pure  .prod-tube { background: #cbc8c0; }
-.prod-card.v-fresh .prod-tube { background: #d4c5b2; }
-.prod-card.v-clean .prod-tube { background: #b8b5a8; }
-.prod-card.v-sun   .prod-tube { background: #c8bc98; }
-.prod-variant {
-  font-size: 11px;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--mut);
-}
-.prod-name {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 21px;
-  font-weight: 400;
-  line-height: 1.2;
-}
-.prod-scent { font-size: 13.5px; color: var(--mut); line-height: 1.65; }
-.prod-price {
-  margin-top: auto;
-  padding-top: 1rem;
-  font-size: 13.5px;
-  color: var(--txt);
-  letter-spacing: .04em;
-}
-.prod-tag {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  font-size: 10px;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--mut);
-  background: var(--bg);
-  border: 0.5px solid var(--bor);
-  padding: 2px 7px;
-  border-radius: 1px;
-  transition: background .3s;
+.tbtn:hover { background:var(--cream-2); color:var(--ink); border-color:#f0c8b2; transform:translateX(2px); }
+.tbtn.active { background:linear-gradient(135deg,#ffe0cc,#ffccae); border-color:#ff9d76; color:var(--coral-deep); box-shadow:0 2px 0 #f0b496; }
+.tbtn .cost { font-size:10px; color:var(--ink-mute); margin-left:auto; font-weight:700; background:var(--cream-2); padding:2px 7px; border-radius:7px; }
+.tbtn:hover .cost { background:var(--cream-0); }
+.tbtn .sc { font-size:9px; background:rgba(43,163,124,.16); color:var(--green); border-radius:8px; padding:2px 7px; margin-left:5px; font-weight:800; }
+.tbtn.active .cost { color:var(--coral-deep); background:rgba(255,255,255,.55); }
+
+/* PRICE PANEL (legacy/desktop) */
+.price-row { display:flex; align-items:center; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--line-soft); font-size:11px; }
+.price-row:last-child { border-bottom:none; }
+.price-row .pname { color:var(--ink-soft); flex:1; font-weight:600; }
+.price-controls { display:flex; align-items:center; gap:6px; }
+.price-controls button { width:22px; height:22px; background:var(--cream-2); border:1px solid var(--line); color:var(--ink-soft); cursor:pointer; border-radius:7px; font-size:14px; line-height:1; display:flex; align-items:center; justify-content:center; transition:all .14s; }
+.price-controls button:hover { background:var(--coral-wash); border-color:#ff9d76; color:var(--coral-deep); }
+.price-val { font-family:'Fredoka',sans-serif; font-size:11px; color:var(--green); font-weight:600; min-width:42px; text-align:center; }
+
+/* INFO PANEL */
+#infopanel { padding:13px 11px; font-size:11px; color:var(--ink-soft); line-height:1.8; flex:1; }
+#infopanel b { color:var(--ink); font-weight:800; }
+
+/* INFO CARDS (star hint, guest types, needs) */
+.info-card { margin:9px 11px; padding:11px 12px; background:var(--cream-2); border:1px solid var(--line-soft); border-radius:13px; }
+.info-card .ic-title { font-size:9px; color:var(--ink-mute); text-transform:uppercase; letter-spacing:1.3px; font-weight:800; margin-bottom:7px; }
+.info-card .ic-body { font-size:10.5px; color:var(--ink-soft); line-height:1.95; }
+.info-card .ic-body b { font-weight:800; }
+#star-hint b { color:var(--gold); }
+
+/* GUEST PANEL */
+#happy-wrap { position:relative; }
+#happy-wrap .stat { cursor:pointer; user-select:none; transition:all .14s; }
+#happy-wrap .stat:hover { border-color:#ffc4a8; background:var(--cream-2); }
+#happy-wrap .stat.open { border-color:#ff9d76; background:var(--coral-wash); }
+#guest-panel { display:none; position:absolute; top:calc(100% + 12px); left:50%; transform:translateX(-50%); width:222px; background:var(--cream-0); border:1px solid var(--line-soft); border-radius:16px; padding:14px; box-shadow:var(--shadow-pop); z-index:500; }
+#guest-panel.open { display:block; }
+.gp-header { display:flex; justify-content:space-between; align-items:center; padding-bottom:10px; margin-bottom:10px; border-bottom:1px solid var(--line-soft); }
+.gp-header .gp-count { font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; color:var(--ink); }
+.gp-header .gp-avg { font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; color:var(--coral); }
+.gp-row { display:flex; align-items:center; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--line-soft); font-size:12px; }
+.gp-row:last-child { border-bottom:none; }
+.gp-row .gp-label { color:var(--ink-soft); display:flex; align-items:center; gap:6px; font-weight:600; }
+.gp-row .gp-bar-wrap { flex:1; margin:0 11px; height:7px; background:var(--coral-wash); border-radius:99px; overflow:hidden; box-shadow:inset 0 1px 2px rgba(120,80,55,.1); }
+.gp-row .gp-bar { height:100%; border-radius:99px; transition:width .4s; }
+.gp-row .gp-num { font-family:'Fredoka',sans-serif; font-weight:600; min-width:18px; text-align:right; color:var(--ink); }
+.gp-row.hungry .gp-bar { background:#e8775c; } .gp-row.tired .gp-bar { background:#5a9fd4; }
+.gp-row.bored .gp-bar { background:#f0a92e; } .gp-row.unhappy .gp-bar { background:#ec6b6b; }
+.gp-row.hungry .gp-num { color:#d4593c; } .gp-row.tired .gp-num { color:#4a8fc4; }
+.gp-row.bored .gp-num { color:#d4912e; } .gp-row.unhappy .gp-num { color:#d44c4c; }
+
+/* ───────────────────────── CANVAS ───────────────────────── */
+#canvas-area { flex:1; overflow:auto; background:radial-gradient(120% 92% at 50% 0%,#ffdcc6 0%,#ffe8da 40%,#fbeede 74%); display:flex; align-items:flex-end; justify-content:center; }
+#gameCanvas { display:block; cursor:crosshair; touch-action:none; }
+
+/* ───────────────────────── CONFIRM MODAL ───────────────────────── */
+#confirm-overlay { display:none; position:fixed; inset:0; background:rgba(80,55,40,.32); backdrop-filter:blur(4px); z-index:900; align-items:center; justify-content:center; }
+#confirm-overlay.show { display:flex; }
+#confirm-box { background:var(--cream-0); border:1px solid var(--line-soft); border-radius:22px; padding:26px; max-width:330px; width:90%; box-shadow:0 22px 56px rgba(120,80,55,.34); animation:popIn .16s ease; }
+@keyframes popIn { from { transform:scale(.92); opacity:0; } to { transform:scale(1); opacity:1; } }
+#confirm-box .cb-title { font-family:'Fredoka',sans-serif; font-size:16px; font-weight:600; color:var(--ink); margin-bottom:9px; }
+#confirm-box .cb-msg { font-size:12.5px; color:var(--ink-soft); line-height:1.65; margin-bottom:20px; }
+#confirm-box .cb-btns { display:flex; gap:9px; justify-content:flex-end; }
+#confirm-box .cb-btns button { padding:10px 22px; border:none; border-radius:12px; font-family:'Fredoka',sans-serif; font-size:12px; font-weight:600; cursor:pointer; transition:all .12s; }
+#confirm-box .cb-btns button:active { transform:translateY(2px); }
+#confirm-box .cb-no { background:var(--cream-2); color:var(--ink-soft); box-shadow:0 3px 0 var(--line); }
+#confirm-box .cb-no:active { box-shadow:0 1px 0 var(--line); }
+#confirm-box .cb-yes { background:linear-gradient(135deg,#ff9d76,#f06b48); color:#fff; box-shadow:0 3px 0 var(--coral-deep); }
+#confirm-box .cb-yes:active { box-shadow:0 1px 0 var(--coral-deep); }
+
+/* ───────────────────────── TOOL TIP ───────────────────────── */
+#tool-tip { position:fixed; bottom:66px; left:50%; transform:translateX(-50%); background:#4c3a31; color:#fff6ef; font-family:'Fredoka',sans-serif; font-size:12px; font-weight:500; letter-spacing:.2px; padding:8px 19px; border-radius:99px; box-shadow:0 8px 22px rgba(120,80,55,.42); pointer-events:none; white-space:nowrap; z-index:400; opacity:0; transition:opacity .15s; }
+#tool-tip.show { opacity:1; }
+
+/* ───────────────────────── TOAST ───────────────────────── */
+#toast { position:fixed; bottom:22px; left:50%; transform:translateX(-50%); background:#4c3a31; color:#ffd08a; padding:11px 26px; border-radius:99px; font-family:'Fredoka',sans-serif; font-size:13px; font-weight:600; box-shadow:0 10px 28px rgba(120,80,55,.42); pointer-events:none; opacity:0; transition:opacity .3s; z-index:999; white-space:nowrap; }
+#toast.show { opacity:1; }
+
+/* ───────────────────────── BOTTOM BAR ───────────────────────── */
+#mob-bar { display:flex; height:56px; align-items:center; background:linear-gradient(180deg,#fffdfb,#fff4ec); border-top:1px solid var(--line); padding:0 10px; gap:7px; overflow-x:auto; flex-shrink:0; -webkit-overflow-scrolling:touch; scrollbar-width:none; box-shadow:0 -5px 20px rgba(120,80,55,.1); }
+#mob-bar::-webkit-scrollbar { display:none; }
+.mob-btn { flex-shrink:0; padding:8px 12px; background:var(--cream-0); border:1px solid var(--line-soft); color:var(--ink-soft); border-radius:12px; font-size:15px; cursor:pointer; white-space:nowrap; -webkit-tap-highlight-color:transparent; transition:all .14s; box-shadow:0 2px 0 var(--line); }
+.mob-btn:active { background:var(--coral-wash); transform:translateY(2px); box-shadow:0 0 0 var(--line); }
+.mob-btn.active { background:linear-gradient(135deg,#ffe0cc,#ffccae); border-color:#ff9d76; color:var(--coral-deep); box-shadow:0 2px 0 #f0b496; }
+.mob-sep { width:1px; background:var(--line); flex-shrink:0; align-self:center; height:30px; margin:0 3px; }
+#mob-overlay { display:none; position:fixed; inset:0; background:rgba(80,55,40,.3); z-index:199; backdrop-filter:blur(3px); }
+#mob-overlay.show { display:block; }
+
+/* ───────────────────────── PRICE POPUP ───────────────────────── */
+#price-popup { position:fixed; bottom:56px; left:0; right:0; max-width:420px; margin:0 auto; background:var(--cream-0); border:1px solid var(--line-soft); border-radius:24px 24px 0 0; padding:18px; box-shadow:0 -12px 40px rgba(120,80,55,.26); z-index:250; transform:translateY(calc(100% + 60px)); transition:transform .26s cubic-bezier(.4,0,.2,1); }
+#price-popup.open { transform:translateY(0); }
+#price-popup .pp-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:11px; padding-bottom:10px; border-bottom:1px solid var(--line-soft); }
+#price-popup .pp-head span { font-family:'Fredoka',sans-serif; font-size:13px; font-weight:600; color:var(--ink); letter-spacing:.3px; }
+#price-popup .pp-close { background:var(--cream-2); border:none; color:var(--ink-mute); cursor:pointer; font-size:15px; line-height:1; width:28px; height:28px; border-radius:9px; transition:all .14s; }
+#price-popup .pp-close:hover { color:var(--ink); background:var(--coral-wash); }
+#price-popup .pp-hint { font-size:9.5px; color:var(--ink-mute); margin-top:11px; line-height:1.55; }
+
+@media (max-width: 768px) {
+  #app { height:100dvh; }
+  #topbar { height:auto; flex-wrap:wrap; gap:6px 8px; padding:9px 11px; }
+  .brand h1 { font-size:13px; }
+  .brand h1 span { display:none; }
+  .brand .logo { width:30px; height:30px; font-size:16px; }
+  .stat { padding:5px 9px; min-width:48px; }
+  .stat .val { font-size:13px; } .stat .lbl { font-size:7px; }
+  .tb-div, #day-bar-wrap, #btnSave, #btnNewGame, #btnAddFloor, #saveFlash { display:none; }
+  .tb-spacer { display:none; }
+  .speed-group { margin-left:auto; }
+  #canvas-area { flex:1; overflow-x:hidden; overflow-y:auto; -webkit-overflow-scrolling:touch; display:flex; align-items:flex-end; justify-content:center; }
+  #toast { bottom:74px; }
 }
 
-/* INGREDIENTS */
-.ing-lead {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(24px, 3.5vw, 38px);
-  font-weight: 300;
-  line-height: 1.2;
-  margin-bottom: 3rem;
-  max-width: 520px;
-}
-.ing-lead em { font-style: italic; }
-.ing-list {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-.ing-item {
-  background: var(--sur);
-  border: 0.5px solid var(--bor);
-  border-radius: 3px;
-  padding: 1.4rem 1.4rem 1.2rem;
-  transition: background .3s;
-}
-.ing-name {
-  font-size: 15px;
-  font-weight: 400;
-  color: var(--txt);
-  margin-bottom: 7px;
-}
-.ing-role { font-size: 13.5px; color: var(--mut); line-height: 1.6; }
-.ing-note {
-  margin-top: 3rem;
-  font-size: 14px;
-  color: var(--mut);
-  line-height: 1.85;
-  max-width: 460px;
-  padding-left: 1.25rem;
-  border-left: 1px solid var(--bor);
-}
-
-/* CLOSING */
-.closing {
-  padding: 7rem 2rem;
-  max-width: 820px;
-  margin: 0 auto;
-  border-top: 0.5px solid var(--bor);
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 3rem;
-  flex-wrap: wrap;
-}
-.closing-text {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(30px, 5vw, 56px);
-  font-weight: 300;
-  line-height: 1.1;
-  max-width: 560px;
-}
-.closing-text em { font-style: italic; }
-.closing-aside {
-  font-size: 13.5px;
-  color: var(--mut);
-  line-height: 1.9;
-  text-align: right;
-  white-space: nowrap;
-}
-
-/* FOOTER */
-footer {
-  border-top: 0.5px solid var(--bor);
-  padding: 1.75rem 2rem;
-  max-width: 820px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-.footer-brand {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 15px;
-  font-weight: 400;
-  letter-spacing: .04em;
-}
-.footer-info { font-size: 12.5px; color: var(--mut); letter-spacing: .04em; }
-
-/* ============ SURVEY PAGE ============ */
-.survey-wrap {
-  max-width: 540px;
-  margin: 0 auto;
-  padding: 3rem 1.5rem 6rem;
-}
-.survey-back {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  letter-spacing: .07em;
-  text-transform: uppercase;
-  color: var(--mut);
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  margin-bottom: 2.5rem;
-  font-family: 'Jost', sans-serif;
-  transition: color .15s;
-}
-.survey-back:hover { color: var(--txt); }
-
-.eyebrow { font-size: 12.5px; font-weight: 500; letter-spacing: .12em; color: var(--mut); text-transform: uppercase; margin-bottom: 14px; }
-.top h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(30px, 5vw, 40px); font-weight: 300; line-height: 1.2; margin-bottom: 12px; }
-.top h1 em { font-style: italic; }
-.top p { font-size: 15px; color: var(--mut); line-height: 1.8; margin-bottom: 2.5rem; }
-
-.name-input-wrap { margin-bottom: 1.25rem; }
-.name-input-wrap input {
-  width: 100%; padding: 13px 16px;
-  border: 0.5px solid var(--bor); border-radius: 3px;
-  font-family: 'Jost', sans-serif; font-weight: 400; font-size: 15px;
-  color: var(--txt); background: var(--sur);
-  outline: none; transition: border-color .15s, background .3s;
-  -webkit-appearance: none;
-}
-.name-input-wrap input:focus { border-color: var(--txt); }
-.name-input-wrap input::placeholder { color: var(--mut); }
-
-.prog-wrap { margin-bottom: 2.25rem; }
-.prog-track { height: 2px; background: var(--bor); border-radius: 2px; overflow: hidden; margin-bottom: 8px; }
-.prog-bar {
-  height: 100%; border-radius: 2px;
-  transition: width .5s cubic-bezier(.4,0,.2,1), background-color .4s ease;
-}
-.prog-label { font-size: 11px; color: var(--mut); letter-spacing: .04em; display: flex; justify-content: space-between; }
-
-.step { display: none; }
-.step.active { display: block; animation: stepIn .38s cubic-bezier(0.16,1,0.3,1); }
-.step.active.back { animation: stepInBack .38s cubic-bezier(0.16,1,0.3,1); }
-@keyframes stepIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-@keyframes stepInBack { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
-@keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-.q-cat { font-size: 11px; letter-spacing: .12em; color: var(--mut); text-transform: uppercase; margin-bottom: 10px; }
-.q-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 400; line-height: 1.35; margin-bottom: 6px; }
-.q-hint { font-size: 14px; color: var(--mut); margin-bottom: 1.5rem; }
-
-.opts { display: flex; flex-direction: column; gap: 7px; }
-.opts.grid2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 7px; }
-
-.opt {
-  display: flex; align-items: center; gap: 12px;
-  padding: 13px 16px;
-  border: 0.5px solid var(--bor); border-radius: 3px;
-  background: var(--sur); color: var(--txt);
-  font-family: 'Jost', sans-serif; font-weight: 400; font-size: 15px; line-height: 1.45;
-  cursor: pointer; user-select: none;
-  transition: border-color .12s, background .12s, color .12s, transform .1s;
-  -webkit-tap-highlight-color: transparent;
-}
-.opt:hover { border-color: #b5b2aa; background: var(--hov); }
-.opt:active { transform: scale(.98); }
-.opt.sel { border-color: var(--txt); background: var(--txt); color: var(--sur); }
-
-.dot { width:15px;height:15px;min-width:15px;border:1.5px solid var(--bor);border-radius:50%;flex-shrink:0;position:relative;transition:border-color .12s; }
-.dot::after { content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:6px;height:6px;border-radius:50%;background:transparent;transition:background .12s; }
-.opt.sel .dot { border-color:var(--sur); }
-.opt.sel .dot::after { background:var(--sur); }
-
-.box { width:15px;height:15px;min-width:15px;border:1.5px solid var(--bor);border-radius:2px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .12s; }
-.box svg { display:none; }
-.opt.sel .box { border-color:var(--sur); }
-.opt.sel .box svg { display:block; }
-
-textarea {
-  width: 100%; padding: 13px 15px;
-  border: 0.5px solid var(--bor); border-radius: 3px;
-  font-family: 'Jost', sans-serif; font-weight: 400; font-size: 13.5px;
-  color: var(--txt); background: var(--sur);
-  resize: vertical; min-height: 100px; outline: none; line-height: 1.65;
-  transition: border-color .15s, background .3s; -webkit-appearance: none;
-}
-textarea:focus { border-color: var(--txt); }
-textarea::placeholder { color: var(--mut); }
-
-.val-msg { font-size: 12px; color: var(--err); margin-top: 10px; display: none; animation: fadeUp .2s ease; }
-.val-msg.show { display: block; }
-
-.btns { display: flex; gap: 8px; margin-top: 2rem; align-items: center; }
-.btn {
-  padding: 12px 24px;
-  border: 0.5px solid var(--bor); border-radius: 3px;
-  font-family: 'Jost', sans-serif; font-weight: 400; font-size: 13px;
-  letter-spacing: .06em; text-transform: uppercase;
-  cursor: pointer; background: var(--sur); color: var(--txt);
-  transition: all .15s; -webkit-tap-highlight-color: transparent;
-}
-.btn:hover { background: var(--hov); border-color: #b5b2aa; }
-.btn.pri { background: var(--txt); color: var(--sur); border-color: var(--txt); }
-.btn.pri:hover { opacity: .78; }
-.btn.ghost { background: transparent; border-color: transparent; color: var(--mut); padding-left: 4px; }
-.btn.ghost:hover { color: var(--txt); background: transparent; border-color: transparent; }
-.btn:active { transform: scale(.97); }
-.btn:disabled { opacity: .4; cursor: not-allowed; transform: none; }
-.btn.err-state { background: transparent; border-color: var(--err); color: var(--err); }
-
-.spin { display:inline-block;width:14px;height:14px;border:2px solid var(--bor);border-top-color:var(--txt);border-radius:50%;animation:rotate .6s linear infinite;vertical-align:middle;margin-right:6px; }
-.spin-light { border-color:rgba(248,246,242,.2);border-top-color:var(--sur); }
-@keyframes rotate { to { transform:rotate(360deg); } }
-
-/* ============ DONE PAGE ============ */
-.done-wrap { max-width: 380px; margin: 0 auto; padding: 7rem 1.5rem; text-align: center; }
-.done-icon { font-size: 28px; margin-bottom: 2rem; animation: popIn .6s cubic-bezier(.34,1.56,.64,1); display: block; }
-@keyframes popIn { from { transform: scale(0) rotate(-10deg); opacity: 0; } to { transform: scale(1) rotate(0deg); opacity: 1; } }
-.done-wrap .ey { font-size: 10px; letter-spacing: .14em; color: var(--mut); text-transform: uppercase; margin-bottom: 1rem; }
-.done-wrap h2 { font-family: 'Cormorant Garamond', serif; font-size: 40px; font-weight: 300; margin-bottom: 14px; }
-.done-wrap p { font-size: 15.5px; color: var(--mut); line-height: 1.8; }
-.done-back-btn {
-  margin-top: 3rem;
-  font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
-  color: var(--mut); cursor: pointer;
-  background: none; border: none; font-family: 'Jost', sans-serif;
-  transition: color .15s;
-}
-.done-back-btn:hover { color: var(--txt); }
-
-/* ============ ADMIN MODAL ============ */
-.modal-bg { display: none; position: fixed; inset: 0; background: rgba(22,22,14,.3); backdrop-filter: blur(3px); z-index: 200; align-items: center; justify-content: center; }
-.modal-bg.show { display: flex; }
-.modal { background: var(--sur); border: 0.5px solid var(--bor); border-radius: 4px; padding: 2rem; width: 320px; max-width: 90vw; animation: fadeUp .2s ease; }
-.modal h3 { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400; margin-bottom: 6px; }
-.modal p { font-size: 13.5px; color: var(--mut); margin-bottom: 1.25rem; line-height: 1.6; }
-.modal input { width: 100%; padding: 12px 15px; border: 0.5px solid var(--bor); border-radius: 3px; font-family: 'Jost', sans-serif; font-weight: 400; font-size: 14px; color: var(--txt); background: var(--bg); outline: none; transition: border-color .15s; }
-.modal input:focus { border-color: var(--txt); }
-.modal .btns { margin-top: 1.25rem; }
-.modal .err-msg { font-size: 12px; color: var(--err); margin-top: 8px; display: none; }
-
-/* ============ ADMIN LAYOUT ============ */
-.admin-layout { display: flex; min-height: calc(100vh - 52px); }
-.admin-sidebar {
-  width: 200px; flex-shrink: 0;
-  background: var(--sur); border-right: 0.5px solid var(--bor);
-  padding: 1.75rem 0;
-  position: sticky; top: 52px; height: calc(100vh - 52px);
-  overflow-y: auto;
-  transition: background .3s, border-color .3s;
-}
-.sidebar-section { padding: 0 1rem 1.5rem; }
-.sidebar-label { font-size: 9.5px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--mut); margin-bottom: 8px; padding: 0 .5rem; }
-.sidebar-item {
-  display: flex; align-items: center; gap: 8px;
-  padding: 7px 10px; border-radius: 3px;
-  font-size: 13px; color: var(--mut);
-  cursor: pointer; transition: all .12s;
-  border: none; background: none; width: 100%;
-  text-align: left; font-family: 'Jost', sans-serif; font-weight: 400; letter-spacing: .02em;
-}
-.sidebar-item:hover { background: var(--hov); color: var(--txt); }
-.sidebar-item.active { background: var(--hov); color: var(--txt); font-weight: 400; }
-.sidebar-item .si-icon { font-size: 14px; opacity: .7; width: 18px; }
-.sidebar-divider { height: 0.5px; background: var(--bor); margin: .5rem 1rem 1rem; }
-.live-dot { width: 6px; height: 6px; background: #4caf50; border-radius: 50%; animation: pulse-dot 2s infinite; margin-left: auto; }
-@keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:.4} }
-
-.admin-main { flex: 1; padding: 2rem 2rem 5rem; overflow-y: auto; min-width: 0; }
-.admin-view { display: none; }
-.admin-view.active { display: block; animation: fadeUp .25s ease; }
-
-.view-title { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 300; margin-bottom: .4rem; }
-.view-sub { font-size: 13px; color: var(--mut); margin-bottom: 1.75rem; }
-
-.stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 1.5rem; }
-.stat-card { background: var(--sur); border: 0.5px solid var(--bor); border-radius: 3px; padding: 1rem 1rem .9rem; transition: background .3s, border-color .3s; }
-.stat-label { font-size: 10.5px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--mut); margin-bottom: 7px; }
-.stat-val { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 300; line-height: 1; }
-.stat-val.sm { font-size: 14px; line-height: 1.4; padding-top: 4px; font-family: 'Jost', sans-serif; font-weight: 400; }
-
-.insight-banner { background: var(--txt); color: var(--sur); border-radius: 3px; padding: 1.1rem 1.25rem; margin-bottom: 1.5rem; font-size: 13px; line-height: 1.75; display: none; }
-.insight-banner strong { font-weight: 500; }
-.ib-title { font-size: 9px; letter-spacing: .12em; text-transform: uppercase; opacity: .5; margin-bottom: 8px; }
-
-.charts-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 1.5rem; }
-.chart-card { background: var(--sur); border: 0.5px solid var(--bor); border-radius: 3px; padding: 1rem 1.1rem; transition: background .3s, border-color .3s; }
-.chart-card h4 { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--mut); margin-bottom: 14px; }
-.bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-.bar-label { font-size: 11.5px; color: var(--txt); min-width: 130px; line-height: 1.3; flex-shrink: 0; }
-.bar-track { flex: 1; height: 4px; background: var(--bg); border-radius: 2px; overflow: hidden; }
-.bar-fill { height: 100%; background: var(--txt); border-radius: 2px; transition: width .6s ease; }
-.bar-num { font-size: 11px; color: var(--mut); min-width: 20px; text-align: right; }
-.top-badge { display: inline-block; padding: 1px 6px; background: var(--txt); color: var(--sur); font-size: 9px; letter-spacing: .06em; border-radius: 1px; margin-left: 5px; vertical-align: middle; text-transform: uppercase; }
-
-.trend-card { background: var(--sur); border: 0.5px solid var(--bor); border-radius: 3px; padding: 1rem 1.1rem; margin-bottom: 1.5rem; }
-.trend-card h4 { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--mut); margin-bottom: 14px; }
-.trend-bars { display: flex; align-items: flex-end; gap: 4px; height: 60px; }
-.trend-col { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
-.trend-bar { width: 100%; background: var(--bor); border-radius: 2px 2px 0 0; transition: background .2s; min-height: 2px; }
-.trend-bar.has-data { background: var(--txt); }
-.trend-day { font-size: 9px; color: var(--mut); text-align: center; }
-.trend-num { font-size: 9px; color: var(--mut); }
-
-.open-ends-list { display: flex; flex-direction: column; gap: 8px; }
-.open-end-item { background: var(--sur); border: 0.5px solid var(--bor); border-radius: 3px; padding: .9rem 1rem; }
-.open-end-name { font-family: 'Cormorant Garamond', serif; font-size: 14px; color: var(--mut); margin-bottom: 4px; }
-.open-end-text { font-size: 13px; color: var(--txt); line-height: 1.6; font-style: italic; }
-
-.table-toolbar { display: flex; gap: 8px; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
-.search-box { flex: 1; min-width: 180px; padding: 8px 12px; border: 0.5px solid var(--bor); border-radius: 3px; font-family: 'Jost', sans-serif; font-weight: 400; font-size: 13px; color: var(--txt); background: var(--sur); outline: none; transition: border-color .15s; }
-.search-box:focus { border-color: var(--txt); }
-.search-box::placeholder { color: var(--mut); }
-.filter-btn { font-size: 11px; padding: 6px 12px; border: 0.5px solid var(--bor); border-radius: 2px; background: var(--sur); color: var(--mut); cursor: pointer; font-family: 'Jost', sans-serif; transition: all .12s; white-space: nowrap; }
-.filter-btn:hover { border-color: #b5b2aa; color: var(--txt); }
-.filter-btn.active { background: var(--txt); color: var(--sur); border-color: var(--txt); }
-
-.resp-table-wrap { overflow-x: auto; }
-.resp-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-.resp-table th { font-size: 10.5px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--mut); border-bottom: 0.5px solid var(--bor); padding: 8px 12px; text-align: left; white-space: nowrap; cursor: pointer; user-select: none; }
-.resp-table th:hover { color: var(--txt); }
-.resp-table th .sort-icon { font-size: 8px; margin-left: 3px; opacity: .5; }
-.resp-table td { padding: 10px 12px; border-bottom: 0.5px solid var(--bor); color: var(--txt); vertical-align: top; }
-.resp-table tr:hover td { background: var(--hov); cursor: pointer; }
-.resp-table tr.new-row td:first-child { border-left: 2px solid var(--txt); }
-.resp-table tr.virgin-row td:first-child { border-left: 2px solid var(--mut); }
-.tag-sm { display: inline-block; padding: 1px 6px; border: 0.5px solid var(--bor); border-radius: 2px; font-size: 10.5px; color: var(--mut); margin: 1px 2px 1px 0; background: var(--bg); }
-.badge-new-sm { display: inline-block; padding: 1px 5px; background: var(--txt); color: var(--sur); font-size: 9px; border-radius: 1px; margin-left: 4px; text-transform: uppercase; letter-spacing: .04em; vertical-align: middle; }
-.badge-virgin-sm { display: inline-block; padding: 1px 5px; background: var(--hov); color: var(--mut); border: 0.5px solid var(--bor); font-size: 9px; border-radius: 1px; margin-left: 4px; text-transform: uppercase; letter-spacing: .04em; vertical-align: middle; }
-
-.detail-modal-bg { display: none; position: fixed; inset: 0; background: rgba(22,22,14,.3); backdrop-filter: blur(3px); z-index: 300; align-items: flex-start; justify-content: center; padding: 2rem 1rem; overflow-y: auto; }
-.detail-modal-bg.show { display: flex; }
-.detail-modal { background: var(--sur); border: 0.5px solid var(--bor); border-radius: 4px; width: 560px; max-width: 100%; animation: fadeUp .2s ease; padding: 2rem; }
-.dm-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; }
-.dm-name { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 300; }
-.dm-date { font-size: 11px; color: var(--mut); margin-top: 4px; }
-.dm-close { background: none; border: none; cursor: pointer; font-size: 20px; color: var(--mut); padding: 0; line-height: 1; }
-.dm-close:hover { color: var(--txt); }
-.dm-row { display: flex; gap: 12px; padding: 10px 0; border-bottom: 0.5px solid var(--bor); font-size: 13px; }
-.dm-key { color: var(--mut); min-width: 160px; flex-shrink: 0; font-size: 11.5px; padding-top: 1px; }
-.dm-val { color: var(--txt); flex: 1; line-height: 1.5; }
-.dm-open { font-style: italic; color: var(--mut); font-size: 14px; line-height: 1.6; margin-top: 1rem; padding: 1rem; background: var(--bg); border-radius: 3px; }
-.dm-badges { display: flex; gap: 6px; margin-bottom: 1rem; flex-wrap: wrap; }
-.badge { display: inline-block; padding: 2px 8px; border-radius: 2px; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; }
-.badge-new { background: var(--txt); color: var(--sur); }
-.badge-virgin { background: var(--hov); color: var(--mut); border: 0.5px solid var(--bor); }
-
-.segment-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 1.5rem; }
-.segment-card { background: var(--sur); border: 0.5px solid var(--bor); border-radius: 3px; padding: 1.1rem; }
-.segment-title { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--mut); margin-bottom: 12px; }
-.segment-stat { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 12.5px; }
-.segment-key { color: var(--mut); }
-.segment-val { font-weight: 400; }
-
-.cross-tab { background: var(--sur); border: 0.5px solid var(--bor); border-radius: 3px; padding: 1.1rem; margin-bottom: 1.5rem; }
-.cross-tab h4 { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--mut); margin-bottom: 14px; }
-.ct-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; font-size: 12px; }
-.ct-label { min-width: 160px; color: var(--mut); flex-shrink: 0; }
-.ct-bars { flex: 1; display: flex; flex-direction: column; gap: 3px; }
-.ct-bar-row { display: flex; align-items: center; gap: 6px; }
-.ct-bar-label { font-size: 10.5px; color: var(--mut); min-width: 80px; }
-.ct-bar-track { flex: 1; height: 3px; background: var(--bg); border-radius: 2px; overflow: hidden; }
-.ct-bar-fill { height: 100%; background: var(--txt); border-radius: 2px; }
-.ct-bar-num { font-size: 10px; color: var(--mut); min-width: 16px; text-align: right; }
-
-.empty-state { text-align: center; padding: 4rem 0; }
-.empty-state h3 { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 300; margin-bottom: 8px; }
-.empty-state p { font-size: 13.5px; color: var(--mut); }
-
-.persona-card { background: var(--txt); color: var(--sur); border-radius: 3px; padding: 1.2rem 1.5rem; margin-bottom: 1.5rem; }
-.persona-label { font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; opacity: .55; margin-bottom: 10px; }
-.persona-tags { display: flex; gap: 6px; flex-wrap: wrap; }
-.persona-tag { font-size: 11px; padding: 3px 9px; border: 0.5px solid rgba(255,255,255,.25); border-radius: 2px; opacity: .9; }
-
-.oe-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
-.oe-meta { flex: 1; }
-.oe-ctx { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 4px; }
-.oe-ctx-tag { font-size: 10px; padding: 1px 6px; border: 0.5px solid var(--bor); border-radius: 2px; color: var(--mut); background: var(--bg); }
-.copy-btn { background: none; border: 0.5px solid var(--bor); cursor: pointer; font-size: 10.5px; color: var(--mut); padding: 3px 8px; border-radius: 2px; transition: all .12s; white-space: nowrap; flex-shrink: 0; font-family: 'Jost', sans-serif; }
-.copy-btn:hover { background: var(--hov); color: var(--txt); border-color: var(--txt); }
-.copy-btn.copied { color: var(--txt); border-color: var(--txt); }
-
-/* ============ ACCORDION ============ */
-.ing-accordion { display: flex; flex-direction: column; gap: 8px; }
-.ing-acc-item {
-  background: var(--sur); border: 0.5px solid var(--bor); border-radius: 4px;
-  overflow: hidden; transition: background .3s, border-color .3s;
-}
-.ing-acc-header {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 1.5rem 1.75rem; cursor: pointer; user-select: none;
-  transition: background .15s;
-}
-.ing-acc-header:hover { background: var(--hov); }
-.ing-acc-label {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 24px; font-weight: 400; line-height: 1.1; margin-bottom: 4px;
-}
-.ing-acc-sub { font-size: 13px; color: var(--mut); letter-spacing: .02em; }
-.ing-acc-icon {
-  font-size: 22px; color: var(--mut); line-height: 1;
-  transition: transform .35s cubic-bezier(.4,0,.2,1), color .15s;
-  flex-shrink: 0; margin-left: 1rem;
-}
-.ing-acc-item.open .ing-acc-icon { transform: rotate(45deg); color: var(--txt); }
-.ing-acc-body {
-  max-height: 0; overflow: hidden;
-  transition: max-height .55s cubic-bezier(0.16,1,0.3,1), padding .55s cubic-bezier(0.16,1,0.3,1);
-  padding: 0 1.75rem;
-}
-.ing-acc-item.open .ing-acc-body { max-height: 300px; padding-bottom: 1.5rem; }
-.ing-acc-row {
-  display: flex; justify-content: space-between; align-items: baseline;
-  padding: 10px 0; border-bottom: 0.5px solid var(--bor);
-}
-.ing-acc-row:last-child { border-bottom: none; }
-.ing-acc-name { font-size: 14.5px; font-weight: 400; color: var(--txt); }
-.ing-acc-role { font-size: 13px; color: var(--mut); text-align: right; max-width: 60%; line-height: 1.4; }
-
-/* ============ CLOSING CTA ============ */
-.closing-cta {
-  max-width: 820px; margin: 0 auto;
-  padding: 0 2rem 5rem;
-  display: flex; flex-direction: column; align-items: flex-start; gap: 14px;
-}
-.closing-survey-btn {
-  font-family: 'Jost', sans-serif; font-weight: 400;
-  font-size: 13px; letter-spacing: .08em; text-transform: uppercase;
-  color: var(--sur); background: var(--txt); border: none;
-  border-radius: 2px; padding: 14px 32px; cursor: pointer;
-  transition: opacity .15s; -webkit-tap-highlight-color: transparent;
-}
-.closing-survey-btn:hover { opacity: .75; }
-.closing-cta-note { font-size: 12px; color: var(--mut); letter-spacing: .03em; }
-
-/* ============ FOOTER LINKS ============ */
-.footer-links { display: flex; align-items: center; gap: 8px; }
-.footer-link {
-  font-size: 12px; color: var(--mut); text-decoration: none;
-  letter-spacing: .04em; transition: color .15s;
-}
-.footer-link:hover { color: var(--txt); }
-.footer-dot { font-size: 12px; color: var(--mut); }
-
-/* ============ STAR ============ */
-.star-btn { background:none; border:none; cursor:pointer; font-size:15px; padding:2px 5px; opacity:.25; transition:opacity .15s,transform .15s; line-height:1; flex-shrink:0; }
-.star-btn:hover { opacity:.6; }
-.star-btn.starred { opacity:1; }
-.star-btn:active { transform:scale(1.3); }
-
-/* ============ REFRESH INDICATOR ============ */
-.refresh-strip { display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem; }
-.refresh-info { font-size:11.5px; color:var(--mut); }
-.refresh-countdown { font-size:11px; color:var(--mut); opacity:.6; }
-.refresh-bar { height:2px; background:var(--bor); border-radius:1px; overflow:hidden; margin-bottom:1.5rem; }
-.refresh-bar-fill { height:100%; background:var(--txt); border-radius:1px; width:100%; transition:width 1s linear; }
-
-/* ============ MOBILE ADMIN NAV ============ */
-.admin-mob-bar { display:none; align-items:center; gap:10px; padding:.75rem 1rem; border-bottom:0.5px solid var(--bor); background:var(--sur); position:sticky; top:52px; z-index:90; }
-.admin-mob-menu { background:none; border:0.5px solid var(--bor); border-radius:3px; padding:5px 9px; cursor:pointer; font-size:16px; color:var(--txt); line-height:1; }
-.admin-mob-title { font-size:13px; font-weight:400; color:var(--txt); letter-spacing:.02em; }
-.admin-overlay { display:none; position:fixed; inset:0; background:rgba(22,22,14,.35); z-index:95; }
-.admin-overlay.show { display:block; }
-
-/* ============ SCROLL REVEAL ============ */
-.reveal {
-  opacity: 0; transform: translateY(24px);
-  transition: opacity .9s cubic-bezier(0.16,1,0.3,1), transform .9s cubic-bezier(0.16,1,0.3,1);
-  will-change: opacity, transform;
-}
-.reveal.visible { opacity: 1; transform: translateY(0); }
-.phil-card.reveal:nth-child(2) { transition-delay: .12s; }
-.phil-card.reveal:nth-child(3) { transition-delay: .24s; }
-.prod-card.reveal:nth-child(2) { transition-delay: .1s; }
-.prod-card.reveal:nth-child(3) { transition-delay: .2s; }
-.prod-card.reveal:nth-child(4) { transition-delay: .3s; }
-.ing-acc-item.reveal:nth-child(2) { transition-delay: .12s; }
-.ing-acc-item.reveal:nth-child(3) { transition-delay: .24s; }
-
-/* ============ MOBILE ============ */
-@media (max-width: 700px) {
-  nav { padding: 1rem 1.25rem; }
-  .hero { padding: 3.5rem 1.25rem 3rem; min-height: auto; }
-  section { padding: 3.5rem 1.25rem; }
-  .phil-grid { grid-template-columns: 1fr; gap: 2px; }
-  .phil-card:first-child { border-radius: 3px 3px 0 0; }
-  .phil-card:last-child { border-radius: 0 0 3px 3px; }
-  .prod-grid { grid-template-columns: repeat(2, 1fr); }
-  .prod-intro { flex-direction: column; align-items: flex-start; gap: 1rem; }
-  .ing-list { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-  .closing { padding: 4rem 1.25rem; flex-direction: column; align-items: flex-start; }
-  .closing-aside { text-align: left; }
-  footer { padding: 1.5rem 1.25rem; }
-  .survey-wrap { padding: 2rem 1.25rem 5rem; }
-  .admin-mob-bar { display:flex; }
-  .admin-sidebar { position:fixed; top:52px; left:-220px; height:calc(100vh - 52px); z-index:100; width:200px; box-shadow:4px 0 24px rgba(22,22,14,.12); transition:left .35s cubic-bezier(0.16,1,0.3,1); }
-  .admin-sidebar.open { left:0; }
-  .admin-main { padding: 1.25rem 1rem 4rem; }
-  .stat-grid { grid-template-columns: repeat(2, 1fr); }
-  .charts-grid { grid-template-columns: 1fr; }
-  .segment-grid { grid-template-columns: 1fr; }
-  .opts.grid2 { grid-template-columns: 1fr; }
-  .dm-row { flex-direction: column; gap: 4px; }
-  .dm-key { min-width: auto; }
-  .bar-label { min-width: 90px; font-size: 12px; }
-  /* Mobile font size boosts */
-  .hero-body { font-size: 15px; }
-  .phil-desc { font-size: 14px; }
-  .prod-subtitle { font-size: 13px; }
-  .prod-scent { font-size: 12.5px; }
-  .ing-role { font-size: 12.5px; }
-  .opt { font-size: 15px; padding: 14px 15px; }
-  .q-title { font-size: 26px; }
-  .top p { font-size: 14.5px; }
-}
-@media (max-width: 480px) {
-  .stat-grid { grid-template-columns: 1fr 1fr; }
-  .ing-list { grid-template-columns: 1fr; gap: 8px; }
-  .prod-grid { grid-template-columns: 1fr 1fr; }
-}
 </style>
 </head>
 <body>
-
-<nav>
-  <span class="logo" id="nav-logo">re-tuel</span>
-  <div class="nav-right">
-    <button id="survey-nav-btn">ankete katıl</button>
-    <button id="theme-tog" title="Tema değiştir">☀️</button>
-    <button id="admin-tog">···</button>
-  </div>
-</nav>
-
-<!-- Admin Şifre Modal -->
-<div class="modal-bg" id="modal-bg">
-  <div class="modal">
-    <h3>Admin Girişi</h3>
-    <p>Yanıtları görüntülemek için şifreyi gir.</p>
-    <input type="password" id="admin-pw" placeholder="şifre" autocomplete="off">
-    <div class="err-msg" id="pw-err">Şifre yanlış.</div>
-    <div class="btns">
-      <button class="btn ghost" id="modal-cancel">iptal</button>
-      <button class="btn pri" id="modal-ok">giriş</button>
+<div id="app">
+  <div id="topbar">
+    <div class="brand">
+      <div class="logo">🏨</div>
+      <h1>Hotel Manager<span>Yönetim</span></h1>
     </div>
-  </div>
-</div>
 
-<!-- Yanıt Detay Modal -->
-<div class="detail-modal-bg" id="detail-modal-bg">
-  <div class="detail-modal" id="detail-modal-content"></div>
-</div>
+    <div class="tb-div"></div>
 
-<main>
-
-<!-- ===== LANDING ===== -->
-<div class="page active" id="page-landing">
-
-  <div class="hero">
-    <div class="hero-eyebrow">Istanbul · clean lip care</div>
-    <h1 class="hero-headline">
-      Zaten<br>
-      <em>yapıyordun.</em>
-    </h1>
-    <div class="hero-divider"></div>
-    <p class="hero-body">
-      Bakım zaten hayatının içinde. re-tuel bunu daha iyi yapar.
-    </p>
-    <div class="hero-meta">
-      <div class="hero-meta-item"><strong>9</strong>clean içerik</div>
-      <div class="hero-meta-item"><strong>4</strong>varyant</div>
-      <div class="hero-meta-item"><strong>4g</strong>alüminyum tüp</div>
-    </div>
-  </div>
-
-  <section id="felsefe">
-    <div class="sec-label">felsefe</div>
-    <p class="phil-lead">
-      Bağımlı yapmaz.<br>
-      <em>Tam tersine dengeler.</em>
-    </p>
-    <div class="phil-grid">
-      <div class="phil-card reveal">
-        <div class="phil-num">01</div>
-        <div class="phil-title">İlk anda<br><em>hissedilir</em></div>
-        <p class="phil-desc">Sürdüğünde hemen fark edersin. Ağır değil, yapışmaz. Hafif, temiz ve yerinde bir his bırakır.</p>
-      </div>
-      <div class="phil-card reveal">
-        <div class="phil-num">02</div>
-        <div class="phil-title">Gün içinde<br><em>seninle uyumlu</em></div>
-        <p class="phil-desc">Rahatsız etmez. Fark etmezsin — ama etkisi sürer. Kuruluk ve çatlama zamanla kaybolur.</p>
-      </div>
-      <div class="phil-card reveal">
-        <div class="phil-num">03</div>
-        <div class="phil-title">Zamanla<br><em>yerleşir</em></div>
-        <p class="phil-desc">Geçici bir çözüm değil. Dudak zamanla kendi dengesini bulur. Sonrasında başka bir şeye ihtiyaç hissetmezsin.</p>
-      </div>
-    </div>
-  </section>
-
-  <section id="urun">
-    <div class="sec-label">ürün</div>
-    <div class="prod-intro">
-      <div>
-        <h2 class="prod-title">re-tuel<br><em>pure</em></h2>
-      </div>
-      <p class="prod-subtitle">Az ürün, net sonuç. Hepsi aynı temiz içerik temelinden gelir.</p>
-    </div>
-    <div class="prod-grid">
-      <div class="prod-card v-pure reveal">
-        <div class="prod-tube"></div>
-        <div class="prod-variant">pure</div>
-        <div class="prod-name">pure</div>
-        <div class="prod-scent">Sabah rutininin en sakin parçası. Kokusuz, saf, hafif.</div>
-        <div class="prod-price">319₺</div>
-      </div>
-      <div class="prod-card v-fresh">
-        <div class="prod-tube"></div>
-        <div class="prod-variant">pure</div>
-        <div class="prod-name">fresh</div>
-        <div class="prod-scent">Isparta gülü ve Ege limonunun ferah uyumu. Gün içinde tazelik.</div>
-        <div class="prod-price">319₺</div>
-      </div>
-      <div class="prod-card v-clean">
-        <div class="prod-tube"></div>
-        <div class="prod-variant">pure</div>
-        <div class="prod-name">clean</div>
-        <div class="prod-scent">Defne ve zeytin yaprağından doğal denge. Fazlası yok.</div>
-        <div class="prod-price">319₺</div>
-      </div>
-      <div class="prod-card v-sun">
-        <div class="prod-tag">SPF 30</div>
-        <div class="prod-tube"></div>
-        <div class="prod-variant">pure</div>
-        <div class="prod-name">sun</div>
-        <div class="prod-scent">Mineral SPF 30 ile günlük koruma. Beyazlatmaz, yapışmaz.</div>
-        <div class="prod-price">349₺</div>
-      </div>
-    </div>
-  </section>
-
-  <section id="icerik">
-    <div class="sec-label">içerikler</div>
-    <p class="ing-lead">
-      9 içerik.<br>
-      <em>Her biri burada<br>bir işi olduğu için var.</em>
-    </p>
-    <div class="ing-accordion">
-      <div class="ing-acc-item reveal" data-acc>
-        <div class="ing-acc-header">
-          <div>
-            <div class="ing-acc-label">Bariyer</div>
-            <div class="ing-acc-sub">Beeswax · Shea · Cupuaçu</div>
+    <div class="tb-group">
+      <div class="stat money"><span class="lbl">Para</span><span class="val" id="s-money">$50,000</span></div>
+      <div class="stat"><span class="lbl">Misafir</span><span class="val" id="s-guests">0</span></div>
+      <div class="stat stars"><span class="lbl">Otel Yıldızı</span><span class="val" id="s-stars">☆☆☆☆☆</span></div>
+      <div id="happy-wrap">
+        <div class="stat happy" onclick="toggleGuestPanel()">
+          <span class="lbl">Mutluluk ▾</span>
+          <span class="val" id="s-happy">—</span>
+        </div>
+        <div id="guest-panel">
+          <div class="gp-header">
+            <span class="gp-count" id="gp-count">👥 0 misafir</span>
+            <span class="gp-avg"   id="gp-avg">—</span>
           </div>
-          <span class="ing-acc-icon">+</span>
-        </div>
-        <div class="ing-acc-body">
-          <div class="ing-acc-row"><span class="ing-acc-name">Beeswax</span><span class="ing-acc-role">yapıyı oluşturur, koruyucu bariyer sağlar</span></div>
-          <div class="ing-acc-row"><span class="ing-acc-name">Shea Butter</span><span class="ing-acc-role">derin ve kalıcı nem verir</span></div>
-          <div class="ing-acc-row"><span class="ing-acc-name">Cupuaçu Butter</span><span class="ing-acc-role">nemi tutmaya yardımcı olur, yumuşaklık sağlar</span></div>
-        </div>
-      </div>
-      <div class="ing-acc-item reveal" data-acc>
-        <div class="ing-acc-header">
-          <div>
-            <div class="ing-acc-label">Nem</div>
-            <div class="ing-acc-sub">Jojoba · Squalane · Coco-Caprylate</div>
+          <div class="gp-row hungry">
+            <span class="gp-label">🍽 Acıktı</span>
+            <div class="gp-bar-wrap"><div class="gp-bar" id="gp-bar-hungry"></div></div>
+            <span class="gp-num" id="gp-num-hungry">0</span>
           </div>
-          <span class="ing-acc-icon">+</span>
-        </div>
-        <div class="ing-acc-body">
-          <div class="ing-acc-row"><span class="ing-acc-name">Jojoba Oil</span><span class="ing-acc-role">hafif ve dengeli bakım sunar</span></div>
-          <div class="ing-acc-row"><span class="ing-acc-name">Squalane</span><span class="ing-acc-role">ipeksi bir his bırakır</span></div>
-          <div class="ing-acc-row"><span class="ing-acc-name">Coco-Caprylate</span><span class="ing-acc-role">dokuyu akıcı ve konforlu yapar</span></div>
-        </div>
-      </div>
-      <div class="ing-acc-item reveal" data-acc>
-        <div class="ing-acc-header">
-          <div>
-            <div class="ing-acc-label">Onarım</div>
-            <div class="ing-acc-sub">Panthenol · Vit E · Bisabolol</div>
+          <div class="gp-row tired">
+            <span class="gp-label">😴 Yorgun</span>
+            <div class="gp-bar-wrap"><div class="gp-bar" id="gp-bar-tired"></div></div>
+            <span class="gp-num" id="gp-num-tired">0</span>
           </div>
-          <span class="ing-acc-icon">+</span>
-        </div>
-        <div class="ing-acc-body">
-          <div class="ing-acc-row"><span class="ing-acc-name">Panthenol (B5)</span><span class="ing-acc-role">onarımı destekler</span></div>
-          <div class="ing-acc-row"><span class="ing-acc-name">Tocopherol (Vit E)</span><span class="ing-acc-role">antioksidan koruma sağlar</span></div>
-          <div class="ing-acc-row"><span class="ing-acc-name">Bisabolol</span><span class="ing-acc-role">hassasiyeti yatıştırır</span></div>
+          <div class="gp-row bored">
+            <span class="gp-label">🎮 Sıkıldı</span>
+            <div class="gp-bar-wrap"><div class="gp-bar" id="gp-bar-bored"></div></div>
+            <span class="gp-num" id="gp-num-bored">0</span>
+          </div>
+          <div class="gp-row unhappy">
+            <span class="gp-label">😡 Mutsuz</span>
+            <div class="gp-bar-wrap"><div class="gp-bar" id="gp-bar-unhappy"></div></div>
+            <span class="gp-num" id="gp-num-unhappy">0</span>
+          </div>
         </div>
       </div>
     </div>
-    <p class="ing-note">
-      Formül dudağı yormaz. Kendi nemini korumasına yardımcı olur.
-    </p>
-  </section>
 
-  <div class="closing reveal">
-    <h2 class="closing-text">
-      Bunu birlikte<br>
-      <em>şekillendir.</em>
-    </h2>
-    <div class="closing-aside">
-      re-tuel henüz şekilleniyor.<br>
-      Beğenin, beklentin, alışkanlıkların —<br>
-      her şey ürünü etkiliyor.
+    <div class="tb-div"></div>
+
+    <div class="tb-group">
+      <div class="stat"><span class="lbl">Gün</span><span class="val" id="s-day">1</span></div>
+      <div class="stat money"><span class="lbl">Günlük Gelir</span><span class="val" id="s-income">$0</span></div>
+      <div id="day-bar-wrap"><div class="lbl" id="day-phase-lbl">☀️ Gündüz</div><div id="day-bar"><div id="day-bar-fill"></div></div></div>
+    </div>
+
+    <div class="tb-spacer"></div>
+
+    <div class="speed-group">
+      <button class="sp-btn on" onclick="setSpeed(1)" id="sp1">1×</button>
+      <button class="sp-btn"   onclick="setSpeed(2)" id="sp2">2×</button>
+      <button class="sp-btn"   onclick="setSpeed(4)" id="sp3">4×</button>
+    </div>
+    <span id="saveFlash">💾 kaydedildi</span>
+    <button class="topbar-btn" id="btnSave"     onclick="saveGame()">💾 Kaydet</button>
+    <button class="topbar-btn" id="btnNewGame"  onclick="newGame()">🗑 Yeni Oyun</button>
+    <button class="topbar-btn" id="btnAddFloor" onclick="doAddFloor()">+ Kat&nbsp;&nbsp;$2,000</button>
+  </div>
+
+  <div id="main">
+    <div id="sidebar">
+      <div class="section">
+        <div class="section-title">Araçlar</div>
+        <button class="tbtn" id="btn-cursor"   onclick="setTool('cursor')">👆 Seç / Bilgi</button>
+        <button class="tbtn" id="btn-demolish" onclick="setTool('demolish')">🔨 Yık  <span class="cost">%50 geri</span></button>
+      </div>
+      <div class="section">
+        <div class="section-title">Altyapı</div>
+        <button class="tbtn" id="btn-corridor"  onclick="setTool('corridor')">🚶 Koridor   <span class="cost">$100</span></button>
+        <button class="tbtn" id="btn-elevator"  onclick="setTool('elevator')">🛗 Asansör  <span class="cost">$1,500</span></button>
+        <button class="tbtn" id="btn-stairs"    onclick="setTool('stairs')">🪜 Merdiven <span class="cost">$400</span></button>
+      </div>
+      <div class="section">
+        <div class="section-title">Lobi</div>
+        <button class="tbtn" id="btn-reception" onclick="setTool('reception')">🛎 Resepsiyon <span class="cost">$2,000</span></button>
+      </div>
+      <div class="section">
+        <div class="section-title">Odalar</div>
+        <button class="tbtn" id="btn-standard"  onclick="setTool('standard')">🛏 Standart <span class="cost">$800</span></button>
+        <button class="tbtn" id="btn-deluxe"    onclick="setTool('deluxe')">🛏 Deluxe   <span class="cost">$1,500</span></button>
+        <button class="tbtn" id="btn-suite"     onclick="setTool('suite')">👑 Suit     <span class="cost">$4,000</span></button>
+      </div>
+      <div class="section">
+        <div class="section-title">Hizmetler</div>
+        <button class="tbtn" id="btn-restaurant" onclick="setTool('restaurant')">🍽 Restoran <span class="cost">$3,000</span></button>
+        <button class="tbtn" id="btn-bar"        onclick="setTool('bar')">🍹 Bar      <span class="cost">$2,000</span></button>
+        <button class="tbtn" id="btn-pool"       onclick="setTool('pool')">🏊 Havuz   <span class="cost">$6,000</span></button>
+      </div>
+      <div class="section">
+        <div class="section-title">Personel (günlük maaş)</div>
+        <button class="tbtn" onclick="hireStaff('receptionist')">💁 Resepsiyoncu <span class="cost">$300/g</span><span class="sc" id="sc-receptionist"></span></button>
+        <button class="tbtn" onclick="hireStaff('maid')">🧹 Temizlikçi   <span class="cost">$200/g</span><span class="sc" id="sc-maid"></span></button>
+        <button class="tbtn" onclick="hireStaff('waiter')">🤵 Garson       <span class="cost">$250/g</span><span class="sc" id="sc-waiter"></span></button>
+        <button class="tbtn" onclick="hireStaff('repairman')">🔧 Tamirci      <span class="cost">$350/g</span><span class="sc" id="sc-repairman"></span></button>
+      </div>
+
+      <!-- STAR HINT -->
+      <div class="info-card" id="star-hint">
+        <div class="ic-title">⭐ Yıldız Gereksinimleri</div>
+        <div class="ic-body">
+          <b>★</b> &nbsp;Resepsiyon + 2 oda<br>
+          <b>★★</b> &nbsp;5 oda + Restoran/Bar<br>
+          <b>★★★</b> &nbsp;8 oda + Restoran + Bar<br>
+          <b>★★★★</b> &nbsp;12 oda + Havuz + Suit<br>
+          <b>★★★★★</b> &nbsp;18 oda + tüm hizmetler
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="ic-title">Misafir Tipleri</div>
+        <div class="ic-body">
+          🧳 <b style="color:#27AE60">Turist</b> — uzun konaklama<br>
+          💼 <b style="color:#2980B9">İş İnsanı</b> — 2★+ kısa, yüksek bütçe<br>
+          👨‍👩‍👧 <b style="color:#8E44AD">Aile</b> — 2★+ havuz sever<br>
+          ⭐ <b style="color:#F39C12">VIP</b> — 4★+ suit ister, 2.5× ödeme
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="ic-title">İhtiyaçlar &amp; Arıza</div>
+        <div class="ic-body">
+          <span style="color:#e74c3c">●</span> Açlık — Restoran/Bar<br>
+          <span style="color:#3498db">●</span> Yorgunluk — Oda<br>
+          <span style="color:#f39c12">●</span> Eğlence — Havuz/Bar<br>
+          ⚠️ Arıza — Tamirci gönder
+        </div>
+      </div>
+
+      <div id="infopanel"><b>Hotel Manager</b><br><br>Yıldız kazan, farklı misafirler çek, arızaları tamir et.</div>
+    </div>
+
+    <div id="canvas-area">
+      <canvas id="gameCanvas"></canvas>
     </div>
   </div>
-  <div class="closing-cta reveal">
-    <button class="closing-survey-btn" id="closing-survey-btn">ankete katıl</button>
-    <span class="closing-cta-note">3 dakika · anonim · veriler ürünü şekillendiriyor</span>
-  </div>
 
-  <footer>
-    <span class="footer-brand">re-tuel</span>
-    <div class="footer-links">
-      <a href="https://www.instagram.com/retuel.co/" target="_blank" rel="noopener" class="footer-link">Instagram</a>
-      <span class="footer-dot">·</span>
-      <a href="mailto:hello@re-tuel.com" class="footer-link">hello@re-tuel.com</a>
-    </div>
-    <span class="footer-info">Istanbul, Türkiye · clean lip care</span>
-  </footer>
-
-</div>
-<!-- /landing -->
-
-<!-- ===== SURVEY ===== -->
-<div class="page" id="page-survey">
-<div class="survey-wrap">
-
-  <button class="survey-back" id="survey-back-btn">← geri dön</button>
-
-  <!-- Step 0: İsim -->
-  <div class="step active" id="step-0">
-    <div class="top">
-      <div class="eyebrow">re-tuel · kullanıcı anketi</div>
-      <h1>Seni tanımak<br><em>istiyoruz.</em></h1>
-      <p>Birkaç soru — 3 dakika sürer. Yanıtların ürünü şekillendiriyor.</p>
-    </div>
-    <div class="name-input-wrap">
-      <input type="text" id="nameInput" placeholder="Adın" autocomplete="given-name" autocorrect="off" autocapitalize="words" />
-    </div>
-    <div class="btns"><button class="btn pri" id="start-btn">başla</button></div>
-  </div>
-
-  <div class="prog-wrap" id="progWrap" style="display:none">
-    <div class="prog-track"><div class="prog-bar" id="pb" style="width:8%"></div></div>
-    <div class="prog-label"><span id="plbl">1 / 12</span><span class="prog-pct" id="ppct">8%</span></div>
-  </div>
-
-  <!-- Step age: Yaş grubu (tek seçim, auto-advance) -->
-  <div class="step" id="step-age">
-    <div class="q-cat">hakkında</div>
-    <div class="q-title">Kaç yaşındasın?</div>
-    <div class="opts">
-      <div class="opt" data-q="age" data-v="18–24" data-type="radio" data-auto-next="1"><div class="dot"></div><span>18–24</span></div>
-      <div class="opt" data-q="age" data-v="25–32" data-type="radio" data-auto-next="1"><div class="dot"></div><span>25–32</span></div>
-      <div class="opt" data-q="age" data-v="33–40" data-type="radio" data-auto-next="1"><div class="dot"></div><span>33–40</span></div>
-      <div class="opt" data-q="age" data-v="41+" data-type="radio" data-auto-next="1"><div class="dot"></div><span>41+</span></div>
-    </div>
-    <div class="val-msg" id="val-age">Lütfen bir seçenek işaretle.</div>
-    <div class="btns"><button class="btn ghost" id="age-prev">geri</button><button class="btn pri" id="age-next">devam</button></div>
-  </div>
-
-  <!-- Step 1: Rutin (çoklu seçim) -->
-  <div class="step" id="step-1">
-    <div class="q-cat">günlük rutin</div>
-    <div class="q-title">Dudak bakımını genellikle ne zaman yaparsın?</div>
-    <div class="q-hint">Birden fazla seçebilirsin</div>
-    <div class="opts grid2">
-      <div class="opt" data-q="1" data-v="Sabah rutini" data-type="check" data-excl="false"><div class="box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>Sabah rutini</span></div>
-      <div class="opt" data-q="1" data-v="Gece yatmadan" data-type="check" data-excl="false"><div class="box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>Gece yatmadan</span></div>
-      <div class="opt" data-q="1" data-v="Dışarı çıkmadan" data-type="check" data-excl="false"><div class="box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>Dışarı çıkmadan</span></div>
-      <div class="opt" data-q="1" data-v="Anlık ihtiyaç" data-type="check" data-excl="false"><div class="box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>Anlık ihtiyaçta</span></div>
-      <div class="opt" data-q="1" data-v="Hiç yapmıyorum" data-type="check" data-excl="true"><div class="box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>Hiç yapmıyorum</span></div>
-    </div>
-    <div class="val-msg" id="val-1">Lütfen en az bir seçenek işaretle.</div>
-    <div class="btns"><button class="btn ghost" id="q1-prev">geri</button><button class="btn pri" id="q1-next">devam</button></div>
-  </div>
-
-  <!-- Step usage: Kullanıyor musun? (tek seçim, auto-advance) -->
-  <div class="step" id="step-usage">
-    <div class="q-cat">kullanım</div>
-    <div class="q-title">Lip balm düzenli kullanıyor musun?</div>
-    <div class="opts">
-      <div class="opt" data-q="usage" data-v="Evet" data-type="radio" data-auto-next="freq"><div class="dot"></div><span>Evet, düzenli kullanırım</span></div>
-      <div class="opt" data-q="usage" data-v="Hayır" data-type="radio" data-auto-next="2"><div class="dot"></div><span>Hayır, bazen ya da hiç</span></div>
-    </div>
-    <div class="val-msg" id="val-usage">Lütfen bir seçenek işaretle.</div>
-    <div class="btns"><button class="btn ghost" id="usage-prev">geri</button><button class="btn pri" id="usage-next">devam</button></div>
-  </div>
-
-  <!-- Step freq: Günde kaç kez? (tek seçim, auto-advance, sadece "Evet" sonrası) -->
-  <div class="step" id="step-freq">
-    <div class="q-cat">kullanım sıklığı</div>
-    <div class="q-title">Günde ortalama kaç kez sürersin?</div>
-    <div class="opts">
-      <div class="opt" data-q="freq" data-v="1 kez" data-type="radio" data-auto-next="2"><div class="dot"></div><span>Günde 1 kez</span></div>
-      <div class="opt" data-q="freq" data-v="2 kez" data-type="radio" data-auto-next="2"><div class="dot"></div><span>Günde 2 kez</span></div>
-      <div class="opt" data-q="freq" data-v="3–4 kez" data-type="radio" data-auto-next="2"><div class="dot"></div><span>Günde 3–4 kez</span></div>
-      <div class="opt" data-q="freq" data-v="5+ kez" data-type="radio" data-auto-next="2"><div class="dot"></div><span>5 veya daha fazla</span></div>
-    </div>
-    <div class="val-msg" id="val-freq">Lütfen bir seçenek işaretle.</div>
-    <div class="btns"><button class="btn ghost" id="freq-prev">geri</button><button class="btn pri" id="freq-next">devam</button></div>
-  </div>
-
-  <!-- Step 2: Mevcut ürün (tek seçim, auto-advance) -->
-  <div class="step" id="step-2">
-    <div class="q-cat">mevcut ürün</div>
-    <div class="q-title">Dudakların için şu an ne kullanıyorsun?</div>
-    <div class="opts">
-      <div class="opt" data-q="2" data-v="Eczane / medikal ürün" data-type="radio" data-auto-next="3a"><div class="dot"></div><span>Eczane / medikal ürün (Vaseline, Bepanthol gibi)</span></div>
-      <div class="opt" data-q="2" data-v="Renkli / parlak ürün" data-type="radio" data-auto-next="3a"><div class="dot"></div><span>Renkli / parlak bir şey (ruj, gloss)</span></div>
-      <div class="opt" data-q="2" data-v="Organik / doğal ürün" data-type="radio" data-auto-next="3a"><div class="dot"></div><span>Organik / doğal bir ürün</span></div>
-      <div class="opt" data-q="2" data-v="Market / eczane lip balm" data-type="radio" data-auto-next="3a"><div class="dot"></div><span>Market / eczane lip balm</span></div>
-      <div class="opt" data-q="2" data-v="Hiçbir şey kullanmıyorum" data-type="radio" data-auto-next="3b" id="opt-virgin"><div class="dot"></div><span>Hiçbir şey kullanmıyorum</span></div>
-    </div>
-    <div class="val-msg" id="val-2">Lütfen bir seçenek işaretle.</div>
-    <div class="btns"><button class="btn ghost" id="q2-prev">geri</button><button class="btn pri" id="q2-next">devam</button></div>
-  </div>
-
-  <!-- Step 3a: Şikayet - kullananlar (çoklu seçim) -->
-  <div class="step" id="step-3a">
-    <div class="q-cat">mevcut şikayet</div>
-    <div class="q-title">Kullandığın ürün seni neden tam tatmin etmiyor?</div>
-    <div class="q-hint">Birden fazla seçebilirsin</div>
-    <div class="opts">
-      <div class="opt" data-q="3" data-v="Etkisi kısa sürüyor" data-type="check" data-excl="false"><div class="box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>Etkisi kısa sürüyor</span></div>
-      <div class="opt" data-q="3" data-v="Ağır / yapışkan his" data-type="check" data-excl="false"><div class="box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>Ağır / yapışkan his</span></div>
-      <div class="opt" data-q="3" data-v="İçeriği güvenilir değil" data-type="check" data-excl="false"><div class="box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>İçeriği / güvenilirliği belli değil</span></div>
-      <div class="opt" data-q="3" data-v="Görünüşü hoşuma gitmiyor" data-type="check" data-excl="false"><div class="box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>Görünüşü / ambalajı hoşuma gitmiyor</span></div>
-      <div class="opt" data-q="3" data-v="Memnunum aslında" data-type="check" data-excl="true"><div class="box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>Aslında memnunum — yeni bir şey denemek istiyorum</span></div>
-    </div>
-    <div class="val-msg" id="val-3">Lütfen en az bir seçenek işaretle.</div>
-    <div class="btns"><button class="btn ghost" id="q3a-prev">geri</button><button class="btn pri" id="q3a-next">devam</button></div>
-  </div>
-
-  <!-- Step 3b: Neden hiç - virgin (çoklu seçim) -->
-  <div class="step" id="step-3b">
-    <div class="q-cat">keşfetmemiş</div>
-    <div class="q-title">Şimdiye kadar neden hiç denemedin?</div>
-    <div class="q-hint">Birden fazla seçebilirsin</div>
-    <div class="opts">
-      <div class="opt" data-q="3" data-v="İhtiyaç duymadım" data-type="check" data-excl="false"><div class="box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>İhtiyaç duymadım</span></div>
-      <div class="opt" data-q="3" data-v="Doğru ürünü bulamadım" data-type="check" data-excl="false"><div class="box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>Beğeneceğim ürünü bulamadım</span></div>
-      <div class="opt" data-q="3" data-v="Ne işe yaradığını bilmiyorum" data-type="check" data-excl="false"><div class="box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>Ne işe yaradığını tam bilmiyorum</span></div>
-      <div class="opt" data-q="3" data-v="Fiyat yüksek geldi" data-type="check" data-excl="false"><div class="box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>Fiyatı yüksek geldi</span></div>
-    </div>
-    <div class="val-msg" id="val-3b">Lütfen en az bir seçenek işaretle.</div>
-    <div class="btns"><button class="btn ghost" id="q3b-prev">geri</button><button class="btn pri" id="q3b-next">devam</button></div>
-  </div>
-
-  <!-- Step 4: Problem (çoklu seçim) -->
-  <div class="step" id="step-4">
-    <div class="q-cat">problem tespiti</div>
-    <div class="q-title">Dudaklarında en sık yaşadığın problem nedir?</div>
-    <div class="q-hint">Birden fazla seçebilirsin</div>
-    <div class="opts grid2">
-      <div class="opt" data-q="4" data-v="Kuruluk" data-type="check" data-excl="false"><div class="box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>Kuruluk</span></div>
-      <div class="opt" data-q="4" data-v="Çatlama" data-type="check" data-excl="false"><div class="box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>Çatlama</span></div>
-      <div class="opt" data-q="4" data-v="Pullanma" data-type="check" data-excl="false"><div class="box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>Pullanma</span></div>
-      <div class="opt" data-q="4" data-v="Renk solukluğu" data-type="check" data-excl="false"><div class="box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>Renk solukluğu</span></div>
-      <div class="opt" data-q="4" data-v="Hassasiyet / yanma" data-type="check" data-excl="false"><div class="box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>Hassasiyet / yanma</span></div>
-      <div class="opt" data-q="4" data-v="Sorun yok" data-type="check" data-excl="true"><div class="box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>Sorunum yok</span></div>
-    </div>
-    <div class="val-msg" id="val-4">Lütfen en az bir seçenek işaretle.</div>
-    <div class="btns"><button class="btn ghost" id="q4-prev">geri</button><button class="btn pri" id="q4-next">devam</button></div>
-  </div>
-
-  <!-- Step 5: His beklentisi (tek seçim, auto-advance) -->
-  <div class="step" id="step-5">
-    <div class="q-cat">deneyim beklentisi</div>
-    <div class="q-title">Ürünü sürdüğünde nasıl bir his beklersin?</div>
-    <div class="opts">
-      <div class="opt" data-q="5" data-v="Yok gibi, çok hafif" data-type="radio" data-auto-next="6"><div class="dot"></div><span>Yok gibi — çok hafif</span></div>
-      <div class="opt" data-q="5" data-v="Hafif ama hissedilir" data-type="radio" data-auto-next="6"><div class="dot"></div><span>Hafif ama hissedilir</span></div>
-      <div class="opt" data-q="5" data-v="Yoğun ve koruyucu" data-type="radio" data-auto-next="6"><div class="dot"></div><span>Yoğun ve koruyucu</span></div>
-      <div class="opt" data-q="5" data-v="Parlak / glossy" data-type="radio" data-auto-next="6"><div class="dot"></div><span>Parlak / glossy</span></div>
-    </div>
-    <div class="val-msg" id="val-5">Lütfen bir seçenek işaretle.</div>
-    <div class="btns"><button class="btn ghost" id="q5-prev">geri</button><button class="btn pri" id="q5-next">devam</button></div>
-  </div>
-
-  <!-- Step 6: İçerik (tek seçim, auto-advance) -->
-  <div class="step" id="step-6">
-    <div class="q-cat">içerik hassasiyeti</div>
-    <div class="q-title">Ürünün içeriği / doğallığı senin için ne kadar önemli?</div>
-    <div class="opts">
-      <div class="opt" data-q="6" data-v="Çok önemli, sadece doğal" data-type="radio" data-auto-next="7"><div class="dot"></div><span>Çok önemli — sadece doğal / minimal içerik kullanırım</span></div>
-      <div class="opt" data-q="6" data-v="Önemli ama tek kriter değil" data-type="radio" data-auto-next="7"><div class="dot"></div><span>Önemli ama tek kriter değil</span></div>
-      <div class="opt" data-q="6" data-v="Sonuç önemli içerik değil" data-type="radio" data-auto-next="7"><div class="dot"></div><span>Sonuç önemliyse içerik fark etmez</span></div>
-      <div class="opt" data-q="6" data-v="Hiç bakmıyorum" data-type="radio" data-auto-next="7"><div class="dot"></div><span>İçeriğe hiç bakmıyorum</span></div>
-    </div>
-    <div class="val-msg" id="val-6">Lütfen bir seçenek işaretle.</div>
-    <div class="btns"><button class="btn ghost" id="q6-prev">geri</button><button class="btn pri" id="q6-next">devam</button></div>
-  </div>
-
-  <!-- Step 7: İkna (çoklu seçim) -->
-  <div class="step" id="step-7">
-    <div class="q-cat">satın alma kararı</div>
-    <div class="q-title">Bir lip balm'ı denemeye seni en çok ne ikna eder?</div>
-    <div class="q-hint">Birden fazla seçebilirsin</div>
-    <div class="opts grid2">
-      <div class="opt" data-q="7" data-v="İçerik / formula" data-type="check" data-excl="false"><div class="box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>İçerik / formula — ne olduğunu bilmek</span></div>
-      <div class="opt" data-q="7" data-v="Kullanıcı yorumları" data-type="check" data-excl="false"><div class="box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>Gerçek kullanıcı yorumları</span></div>
-      <div class="opt" data-q="7" data-v="Arkadaş / aile tavsiyesi" data-type="check" data-excl="false"><div class="box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>Arkadaş ya da aile tavsiyesi</span></div>
-      <div class="opt" data-q="7" data-v="Marka hikayesi / değerleri" data-type="check" data-excl="false"><div class="box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>Marka hikayesi / değerleri</span></div>
-      <div class="opt" data-q="7" data-v="Tasarım / ambalaj" data-type="check" data-excl="false"><div class="box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>Tasarım ve ambalaj</span></div>
-      <div class="opt" data-q="7" data-v="Fiyat / değer dengesi" data-type="check" data-excl="false"><div class="box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>Fiyat / değer dengesi</span></div>
-      <div class="opt" data-q="7" data-v="İçerik üreticisi önerisi" data-type="check" data-excl="false"><div class="box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>İçerik üreticisi önerisi</span></div>
-      <div class="opt" data-q="7" data-v="Deneme imkânı" data-type="check" data-excl="false"><div class="box"><svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>Deneme imkânı (tester / küçük boy)</span></div>
-    </div>
-    <div class="val-msg" id="val-7">Lütfen en az bir seçenek işaretle.</div>
-    <div class="btns"><button class="btn ghost" id="q7-prev">geri</button><button class="btn pri" id="q7-next">devam</button></div>
-  </div>
-
-  <!-- Step 8: Fiyat (tek seçim, auto-advance) -->
-  <div class="step" id="step-8">
-    <div class="q-cat">fiyat algısı</div>
-    <div class="q-title">Lip balm için maksimum ne kadar verirsin?</div>
-    <div class="opts">
-      <div class="opt" data-q="8" data-v="100₺ altı" data-type="radio" data-auto-next="9"><div class="dot"></div><span>100₺ altı</span></div>
-      <div class="opt" data-q="8" data-v="100–200₺" data-type="radio" data-auto-next="9"><div class="dot"></div><span>100–200₺</span></div>
-      <div class="opt" data-q="8" data-v="200–350₺" data-type="radio" data-auto-next="9"><div class="dot"></div><span>200–350₺</span></div>
-      <div class="opt" data-q="8" data-v="350–500₺" data-type="radio" data-auto-next="9"><div class="dot"></div><span>350–500₺</span></div>
-      <div class="opt" data-q="8" data-v="500₺ üzeri" data-type="radio" data-auto-next="9"><div class="dot"></div><span>500₺ üzeri — kalitesiyse sorun değil</span></div>
-    </div>
-    <div class="val-msg" id="val-8">Lütfen bir seçenek işaretle.</div>
-    <div class="btns"><button class="btn ghost" id="q8-prev">geri</button><button class="btn pri" id="q8-next">devam</button></div>
-  </div>
-
-  <!-- Step 9: Açık uç -->
-  <div class="step" id="step-9">
-    <div class="q-cat">son soru</div>
-    <div class="q-title">"Benim için mükemmel lip balm ______ olmalı."</div>
-    <div class="q-hint">Cümleyi tamamla — tamamen serbest</div>
-    <textarea id="q9txt" placeholder="istediğin kadar yaz..."></textarea>
-    <div class="btns"><button class="btn ghost" id="q9-prev">geri</button><button class="btn pri" id="submit-btn">gönder</button></div>
-  </div>
-
-</div>
-</div>
-<!-- /survey -->
-
-<!-- ===== DONE ===== -->
-<div class="page" id="page-done">
-  <div class="done-wrap">
-    <span class="done-icon">✦</span>
-    <div class="ey">re-tuel</div>
-    <h2>Teşekkürler.</h2>
-    <p id="done-msg">Yanıtların ürünü şekillendirmemize yardımcı olacak.</p>
-    <button class="done-back-btn" id="done-back-btn">← siteye dön</button>
+  <!-- MOBILE BOTTOM BAR -->
+  <div id="mob-bar">
+    <button class="mob-btn active" id="mob-corridor"    onclick="setTool('corridor')">🚶</button>
+    <button class="mob-btn"        id="mob-elevator"    onclick="setTool('elevator')">🛗</button>
+    <button class="mob-btn"        id="mob-stairs"      onclick="setTool('stairs')">🪜</button>
+    <div class="mob-sep"></div>
+    <button class="mob-btn"        id="mob-reception"   onclick="setTool('reception')">🛎</button>
+    <button class="mob-btn"        id="mob-standard"    onclick="setTool('standard')">🛏</button>
+    <button class="mob-btn"        id="mob-deluxe"      onclick="setTool('deluxe')">🛏✨</button>
+    <button class="mob-btn"        id="mob-suite"       onclick="setTool('suite')">👑</button>
+    <div class="mob-sep"></div>
+    <button class="mob-btn"        id="mob-restaurant"  onclick="setTool('restaurant')">🍽</button>
+    <button class="mob-btn"        id="mob-bar-tool"    onclick="setTool('bar')">🍹</button>
+    <button class="mob-btn"        id="mob-pool"        onclick="setTool('pool')">🏊</button>
+    <div class="mob-sep"></div>
+    <button class="mob-btn"        id="mob-cursor"      onclick="setTool('cursor')">👆</button>
+    <button class="mob-btn"        id="mob-demolish"    onclick="setTool('demolish')">🔨</button>
+    <div class="mob-sep"></div>
+    <button class="mob-btn" onclick="hireStaff('receptionist')" style="color:#5DADE2">💁</button>
+    <button class="mob-btn" onclick="hireStaff('maid')"         style="color:#A9CCE3">🧹</button>
+    <button class="mob-btn" onclick="hireStaff('waiter')"       style="color:#FAD7A0">🤵</button>
+    <button class="mob-btn" onclick="hireStaff('repairman')"    style="color:#E59866">🔧</button>
+    <button class="mob-btn" onclick="doAddFloor()"              style="color:#2ecc71">+Kat</button>
+    <div class="mob-sep"></div>
+    <button class="mob-btn" onclick="togglePricePopup()"        style="color:#00d4aa" id="mob-price">💰</button>
+    <button class="mob-btn" onclick="saveGame()"                style="color:#5DADE2">💾</button>
+    <button class="mob-btn" onclick="newGame()"                 style="color:#e74c3c">🗑</button>
+    <button class="mob-btn" onclick="toggleMobSidebar()"        style="color:#f39c12" id="mob-menu">☰</button>
   </div>
 </div>
 
-<!-- ===== ADMIN ===== -->
-<div class="page" id="page-admin">
-  <div class="admin-mob-bar">
-    <button class="admin-mob-menu" id="admin-mob-menu">☰</button>
-    <span class="admin-mob-title">re-tuel admin</span>
+<div id="mob-overlay" onclick="closeAllPanels()"></div>
+
+<div id="price-popup">
+  <div class="pp-head">
+    <span>💰 Fiyatlandırma</span>
+    <button class="pp-close" onclick="togglePricePopup()">✕</button>
   </div>
-  <div class="admin-overlay" id="admin-overlay"></div>
-  <div class="admin-layout">
-    <aside class="admin-sidebar">
-      <div class="sidebar-section">
-        <div class="sidebar-label">panel</div>
-        <button class="sidebar-item active" data-view="overview"><span class="si-icon">◈</span> Genel Bakış<span class="live-dot" id="live-dot"></span></button>
-        <button class="sidebar-item" data-view="responses"><span class="si-icon">≡</span> Yanıtlar</button>
-        <button class="sidebar-item" data-view="alldata"><span class="si-icon">▦</span> Tüm Veri</button>
-        <button class="sidebar-item" data-view="insights"><span class="si-icon">◎</span> İçgörüler</button>
-        <button class="sidebar-item" data-view="openends"><span class="si-icon">✎</span> Açık Uçlar</button>
-      </div>
-      <div class="sidebar-divider"></div>
-      <div class="sidebar-section">
-        <div class="sidebar-label">işlemler</div>
-        <button class="sidebar-item" id="sb-export"><span class="si-icon">↓</span> CSV İndir</button>
-        <label class="sidebar-item" style="cursor:pointer" id="sb-import-label"><span class="si-icon">↑</span> Yedek Yükle<input type="file" id="sb-import-file" accept=".csv,.json" style="display:none"></label>
-        <button class="sidebar-item" id="sb-reset" style="color:var(--err)"><span class="si-icon">✕</span> Sıfırla</button>
-        <button class="sidebar-item" id="sb-logout"><span class="si-icon">←</span> Çıkış</button>
-      </div>
-    </aside>
-    <div class="admin-main">
-      <div class="admin-view active" id="view-overview">
-        <div class="view-title">Genel Bakış</div>
-        <div class="refresh-strip">
-          <div class="refresh-info" id="ov-sub">Yükleniyor...</div>
-          <div class="refresh-countdown" id="refresh-cd"></div>
-        </div>
-        <div class="refresh-bar"><div class="refresh-bar-fill" id="refresh-bar-fill"></div></div>
-        <div class="stat-grid" id="sg"></div>
-        <div class="insight-banner" id="insightBanner"></div>
-        <div id="persona-card" style="display:none"></div>
-        <div class="trend-card" id="trend-card" style="display:none"><h4>son 7 gün</h4><div class="trend-bars" id="trend-bars"></div></div>
-        <div class="charts-grid" id="cg"></div>
-      </div>
-      <div class="admin-view" id="view-alldata">
-        <div class="view-title">Tüm Veri</div>
-        <div class="view-sub">Ham veri — tüm yanıtlar ve alanlar</div>
-        <div style="margin-bottom:1rem;display:flex;gap:8px;flex-wrap:wrap">
-          <button class="btn" id="alldata-csv"><span>↓</span> CSV İndir</button>
-          <button class="btn" id="alldata-json"><span>↓</span> JSON İndir</button>
-        </div>
-        <div id="alldata-table-wrap" class="resp-table-wrap"></div>
-      </div>
-      <div class="admin-view" id="view-responses">
-        <div class="view-title">Yanıtlar</div>
-        <div class="table-toolbar">
-          <input type="text" class="search-box" id="search-box" placeholder="İsim veya cevap ara...">
-          <button class="filter-btn active" data-filter="all">Tümü</button>
-          <button class="filter-btn" data-filter="virgin">Hiç kullanmamış</button>
-          <button class="filter-btn" data-filter="new">Son 24 saat</button>
-          <button class="filter-btn" data-filter="starred">⭐ Yıldızlılar</button>
-          <button class="filter-btn" id="filtered-csv-btn" style="margin-left:auto">↓ Filtrelenmiş CSV</button>
-        </div>
-        <div class="resp-table-wrap">
-          <table class="resp-table" id="resp-table">
-            <thead><tr>
-              <th style="width:32px"></th>
-              <th data-sort="isim">İsim <span class="sort-icon">↕</span></th>
-              <th data-sort="yas">Yaş <span class="sort-icon">↕</span></th>
-              <th data-sort="tarih">Tarih <span class="sort-icon">↕</span></th>
-              <th data-sort="fiyat">Fiyat <span class="sort-icon">↕</span></th>
-              <th>Problem</th><th>İkna</th><th>His</th>
-            </tr></thead>
-            <tbody id="resp-tbody"></tbody>
-          </table>
-        </div>
-      </div>
-      <div class="admin-view" id="view-insights">
-        <div class="view-title">İçgörüler</div>
-        <div class="view-sub">Segment ve cross-tab analizi</div>
-        <div class="segment-grid" id="seg-grid"></div>
-        <div id="cross-tab-wrap"></div>
-        <div id="yas-analysis"></div>
-      </div>
-      <div class="admin-view" id="view-openends">
-        <div class="view-title">Açık Uçlar</div>
-        <div class="view-sub">Q9 — "Benim için mükemmel lip balm ______ olmalı."</div>
-        <div class="open-ends-list" id="open-ends-list"></div>
-      </div>
+  <div class="price-row"><span class="pname">🛎 Resepsiyon</span><div class="price-controls"><button onclick="chPrice('reception',-10)">−</button><span class="price-val" id="pv-reception">$40</span><button onclick="chPrice('reception',+10)">+</button></div></div>
+  <div class="price-row"><span class="pname">🛏 Standart</span><div class="price-controls"><button onclick="chPrice('standard',-10)">−</button><span class="price-val" id="pv-standard">$90</span><button onclick="chPrice('standard',+10)">+</button></div></div>
+  <div class="price-row"><span class="pname">🛏 Deluxe</span><div class="price-controls"><button onclick="chPrice('deluxe',-10)">−</button><span class="price-val" id="pv-deluxe">$170</span><button onclick="chPrice('deluxe',+10)">+</button></div></div>
+  <div class="price-row"><span class="pname">👑 Suit</span><div class="price-controls"><button onclick="chPrice('suite',-20)">−</button><span class="price-val" id="pv-suite">$350</span><button onclick="chPrice('suite',+20)">+</button></div></div>
+  <div class="price-row"><span class="pname">🍽 Restoran</span><div class="price-controls"><button onclick="chPrice('restaurant',-5)">−</button><span class="price-val" id="pv-restaurant">$55</span><button onclick="chPrice('restaurant',+5)">+</button></div></div>
+  <div class="price-row"><span class="pname">🍹 Bar</span><div class="price-controls"><button onclick="chPrice('bar',-5)">−</button><span class="price-val" id="pv-bar">$45</span><button onclick="chPrice('bar',+5)">+</button></div></div>
+  <div class="price-row"><span class="pname">🏊 Havuz</span><div class="price-controls"><button onclick="chPrice('pool',-5)">−</button><span class="price-val" id="pv-pool">$90</span><button onclick="chPrice('pool',+5)">+</button></div></div>
+  <div class="pp-hint">Yüksek fiyat = az misafir &nbsp;·&nbsp; Düşük fiyat = doluluk artar</div>
+</div>
+
+<div id="tool-tip"></div>
+<div id="toast"></div>
+<div id="confirm-overlay">
+  <div id="confirm-box">
+    <div class="cb-title" id="cb-title"></div>
+    <div class="cb-msg"   id="cb-msg"></div>
+    <div class="cb-btns">
+      <button class="cb-no"  onclick="resolveConfirm(false)">İptal</button>
+      <button class="cb-yes" onclick="resolveConfirm(true)">Değiştir</button>
     </div>
   </div>
 </div>
-<!-- /admin -->
 
-</main>
-
-<script>
-var userName='',isVirgin=false;
-var ans={age:[],usage:[],freq:[],1:[],2:[],3:[],4:[],5:[],6:[],7:[],8:[],9:''};
-var adminAuth=false,allData=[];
-var activeFilter='all',sortCol='tarih',sortDir=-1,searchQ='';
-var priceMap={'100₺ altı':75,'100–200₺':150,'200–350₺':275,'350–500₺':425,'500₺ üzeri':600};
-
-/* STEP NAVIGATION */
-var stepOrder=['age','1','usage','2','3x','4','5','6','7','8','9'];
-function buildStepOrder(){
-  var o=['age','1','usage'];
-  if(ans.usage[0]==='Evet') o.push('freq');
-  o.push('2');
-  o.push(isVirgin?'3b':'3a');
-  o=o.concat(['4','5','6','7','8','9']);
-  stepOrder=o;
-}
-function getStepNum(id){buildStepOrder();var i=stepOrder.indexOf(id);return i>=0?i+1:1;}
-function getTotal(){buildStepOrder();return stepOrder.length;}
-
-function goStep(id,back){
-  document.querySelectorAll('.step').forEach(function(s){s.classList.remove('active','back');});
-  var el=document.getElementById('step-'+id);
-  if(!el)return;
-  if(back)el.classList.add('back');
-  el.classList.add('active');
-  var n=getStepNum(id),tot=getTotal();
-  document.getElementById('progWrap').style.display='block';
-  var pct=Math.round(n/tot*100);
-  var bar=document.getElementById('pb');
-  var r=Math.round(180-(180-22)*(pct/100)),g=Math.round(172-(172-22)*(pct/100)),b=Math.round(158-(158-14)*(pct/100));
-  bar.style.width=pct+'%';bar.style.backgroundColor='rgb('+r+','+g+','+b+')';
-  document.getElementById('plbl').textContent=n+' / '+tot;
-  document.getElementById('ppct').textContent=pct+'%';
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-function validate(q){
-  var k=isNaN(q)?q:parseInt(q);
-  var a=ans[k];
-  var ok=Array.isArray(a)?a.length>0:(typeof a==='string'?a.trim().length>0:false);
-  if(!ok){var v=document.getElementById('val-'+q);if(v)v.classList.add('show');}
-  return ok;
-}
-
-/* PAGE SWITCHING */
-function showPage(p){
-  document.querySelectorAll('.page').forEach(function(x){x.classList.remove('active');});
-  document.getElementById('page-'+p).classList.add('active');
-  if(p==='admin') loadAdminData();
-  if(p==='done'){
-    document.getElementById('done-msg').innerHTML=isVirgin
-      ?'İlk lip balm deneyimin için teşekkürler.<br><br>Yanıtların ürünü şekillendirmeye yardımcı olacak.'
-      :'Yanıtların ürünü şekillendirmemize yardımcı olacak.';
-  }
-  window.scrollTo({top:0});
-}
-
-/* MOBILE SIDEBAR */
-document.getElementById('admin-mob-menu').addEventListener('click',function(){
-  document.querySelector('.admin-sidebar').classList.toggle('open');
-  document.getElementById('admin-overlay').classList.toggle('show');
-});
-document.getElementById('admin-overlay').addEventListener('click',function(){
-  document.querySelector('.admin-sidebar').classList.remove('open');
-  this.classList.remove('show');
-});
-document.querySelectorAll('.sidebar-item').forEach(function(btn){
-  btn.addEventListener('click',function(){
-    document.querySelector('.admin-sidebar').classList.remove('open');
-    document.getElementById('admin-overlay').classList.remove('show');
-  },true);
-});
-
-/* STARS */
-var stars=JSON.parse(localStorage.getItem('retuel_stars')||'{}');
-function toggleStar(id,btn){
-  id=String(id);
-  if(stars[id]){delete stars[id];btn.classList.remove('starred');}
-  else{stars[id]=true;btn.classList.add('starred');}
-  localStorage.setItem('retuel_stars',JSON.stringify(stars));
-}
-function isStarred(id){return !!stars[String(id)];}
-
-/* FILTERED CSV */
-document.getElementById('filtered-csv-btn').addEventListener('click',function(){
-  exportCSV(getFilteredData());
-});
-
-/* REFRESH COUNTDOWN */
-var REFRESH_SEC=30,refreshLeft=REFRESH_SEC,refreshTimer=null;
-function startRefreshCountdown(){
-  clearInterval(refreshTimer);refreshLeft=REFRESH_SEC;updateRefreshUI();
-  refreshTimer=setInterval(function(){
-    refreshLeft--;updateRefreshUI();
-    if(refreshLeft<=0){
-      refreshLeft=REFRESH_SEC;
-      if(document.getElementById('page-admin').classList.contains('active'))loadAdminData();
-    }
-  },1000);
-}
-function updateRefreshUI(){
-  var fill=document.getElementById('refresh-bar-fill');
-  var cd=document.getElementById('refresh-cd');
-  if(fill)fill.style.width=Math.round(refreshLeft/REFRESH_SEC*100)+'%';
-  if(cd)cd.textContent=refreshLeft+'s';
-}
-
-/* NAV */
-document.getElementById('nav-logo').addEventListener('click',function(){showPage('landing');});
-document.getElementById('survey-nav-btn').addEventListener('click',function(){
-  showPage('survey');
-  var pending=localStorage.getItem('retuel_pending');
-  if(pending){
-    try{
-      var entry=JSON.parse(pending);
-      fetch('/api/responses',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(entry)})
-      .then(function(r){if(!r.ok)throw new Error();return r.json();})
-      .then(function(){localStorage.removeItem('retuel_pending');showPage('done');})
-      .catch(function(){});
-    }catch(e){}
-  }
-});
-document.getElementById('closing-survey-btn').addEventListener('click',function(){showPage('survey');});
-document.getElementById('survey-back-btn').addEventListener('click',function(){showPage('landing');});
-document.getElementById('done-back-btn').addEventListener('click',function(){resetSurveyForm();showPage('landing');});
-
-/* ADMIN TOGGLE */
-function openAdminModal(){
-  if(document.getElementById('page-admin').classList.contains('active')){showPage('landing');return;}
-  if(adminAuth){showPage('admin');return;}
-  document.getElementById('modal-bg').classList.add('show');
-  document.getElementById('admin-pw').value='';
-  document.getElementById('pw-err').style.display='none';
-  setTimeout(function(){document.getElementById('admin-pw').focus();},100);
-}
-document.getElementById('admin-tog').addEventListener('click',openAdminModal);
-document.getElementById('modal-cancel').addEventListener('click',function(){document.getElementById('modal-bg').classList.remove('show');history.replaceState(null,'',location.pathname);});
-document.getElementById('modal-bg').addEventListener('click',function(e){if(e.target===this){this.classList.remove('show');history.replaceState(null,'',location.pathname);}});
-document.getElementById('modal-ok').addEventListener('click',checkAdminPw);
-document.getElementById('admin-pw').addEventListener('keydown',function(e){if(e.key==='Enter')checkAdminPw();});
-function checkAdminPw(){
-  var pw=document.getElementById('admin-pw').value;
-  var btn=document.getElementById('modal-ok');
-  btn.disabled=true;btn.textContent='...';
-  fetch('/api/auth',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pw:pw})})
-  .then(function(r){return r.json();})
-  .then(function(d){
-    if(d.ok){adminAuth=true;document.getElementById('modal-bg').classList.remove('show');showPage('admin');}
-    else{document.getElementById('pw-err').style.display='block';document.getElementById('admin-pw').value='';document.getElementById('admin-pw').focus();}
-  })
-  .catch(function(){document.getElementById('pw-err').style.display='block';})
-  .finally(function(){btn.disabled=false;btn.textContent='giriş';});
-}
-if(location.search.includes('admin')){history.replaceState(null,'',location.pathname);openAdminModal();}
-if(location.search.includes('survey')){history.replaceState(null,'',location.pathname);showPage('survey');}
-
-/* THEME */
-var isDark=false;
-document.getElementById('theme-tog').addEventListener('click',function(){
-  isDark=!isDark;document.body.classList.toggle('dark',isDark);this.textContent=isDark?'🌙':'☀️';
-});
-
-/* UTILS */
-function esc(s){var d=document.createElement('div');d.textContent=String(s||'');return d.innerHTML;}
-
-/* EXCLUSIVE CHECKBOX */
-function handleExclusive(q,clickedEl){
-  var isExcl=clickedEl.getAttribute('data-excl')==='true';
-  var allOpts=document.querySelectorAll('.opt[data-q="'+q+'"]');
-  if(isExcl){allOpts.forEach(function(x){if(x!==clickedEl){x.classList.remove('sel');ans[q]=ans[q].filter(function(v){return v!==x.getAttribute('data-v');});}});}
-  else{allOpts.forEach(function(x){if(x.getAttribute('data-excl')==='true'&&x.classList.contains('sel')){x.classList.remove('sel');ans[q]=ans[q].filter(function(v){return v!==x.getAttribute('data-v');});}});}
-}
-
-/* OPT CLICKS */
-document.querySelectorAll('.opt').forEach(function(el){
-  el.addEventListener('click',function(){
-    var qRaw=el.getAttribute('data-q');
-    var q=isNaN(qRaw)?qRaw:parseInt(qRaw);
-    var v=el.getAttribute('data-v'),t=el.getAttribute('data-type');
-    var autoNext=el.getAttribute('data-auto-next');
-    var valEl=document.getElementById('val-'+qRaw);
-    if(valEl)valEl.classList.remove('show');
-    if(t==='radio'){
-      document.querySelectorAll('.opt[data-q="'+qRaw+'"]').forEach(function(x){x.classList.remove('sel');});
-      el.classList.add('sel');ans[q]=[v];
-      if(qRaw==='2')isVirgin=(el.id==='opt-virgin');
-      if(autoNext){setTimeout(function(){goStep(autoNext);},200);}
-    }else{
-      handleExclusive(q,el);
-      if(el.classList.contains('sel')){el.classList.remove('sel');ans[q]=ans[q].filter(function(x){return x!==v;});}
-      else{el.classList.add('sel');ans[q].push(v);}
-    }
-  });
-});
-
-/* START */
-document.getElementById('start-btn').addEventListener('click',function(){
-  var n=document.getElementById('nameInput').value.trim();
-  if(!n){var inp=document.getElementById('nameInput');inp.focus();inp.style.borderColor='var(--err)';setTimeout(function(){inp.style.borderColor='';},1200);return;}
-  userName=n;
-  document.getElementById('step-0').classList.remove('active');
-  goStep('age');
-});
-
-/* NAVIGATION */
-document.getElementById('age-prev').addEventListener('click',function(){
-  document.querySelectorAll('.step').forEach(function(s){s.classList.remove('active','back');});
-  document.getElementById('step-0').classList.add('active');
-  document.getElementById('progWrap').style.display='none';
-});
-document.getElementById('age-next').addEventListener('click',function(){if(!validate('age'))return;goStep('1');});
-document.getElementById('q1-prev').addEventListener('click',function(){goStep('age',true);});
-document.getElementById('q1-next').addEventListener('click',function(){if(!validate(1))return;goStep('usage');});
-document.getElementById('usage-prev').addEventListener('click',function(){goStep('1',true);});
-document.getElementById('usage-next').addEventListener('click',function(){
-  if(!validate('usage'))return;
-  goStep(ans.usage[0]==='Evet'?'freq':'2');
-});
-document.getElementById('freq-prev').addEventListener('click',function(){goStep('usage',true);});
-document.getElementById('freq-next').addEventListener('click',function(){if(!validate('freq'))return;goStep('2');});
-document.getElementById('q2-prev').addEventListener('click',function(){
-  goStep(ans.usage[0]==='Evet'?'freq':'usage',true);
-});
-document.getElementById('q2-next').addEventListener('click',function(){if(!validate(2))return;goStep(isVirgin?'3b':'3a');});
-document.getElementById('q3a-prev').addEventListener('click',function(){goStep('2',true);});
-document.getElementById('q3a-next').addEventListener('click',function(){if(!validate(3))return;goStep('4');});
-document.getElementById('q3b-prev').addEventListener('click',function(){goStep('2',true);});
-document.getElementById('q3b-next').addEventListener('click',function(){if(!validate(3))return;goStep('4');});
-document.getElementById('q4-prev').addEventListener('click',function(){goStep(isVirgin?'3b':'3a',true);});
-document.getElementById('q4-next').addEventListener('click',function(){if(!validate(4))return;goStep('5');});
-document.getElementById('q5-prev').addEventListener('click',function(){goStep('4',true);});
-document.getElementById('q5-next').addEventListener('click',function(){if(!validate(5))return;goStep('6');});
-document.getElementById('q6-prev').addEventListener('click',function(){goStep('5',true);});
-document.getElementById('q6-next').addEventListener('click',function(){if(!validate(6))return;goStep('7');});
-document.getElementById('q7-prev').addEventListener('click',function(){goStep('6',true);});
-document.getElementById('q7-next').addEventListener('click',function(){if(!validate(7))return;goStep('8');});
-document.getElementById('q8-prev').addEventListener('click',function(){goStep('7',true);});
-document.getElementById('q8-next').addEventListener('click',function(){if(!validate(8))return;goStep('9');});
-document.getElementById('q9-prev').addEventListener('click',function(){goStep('8',true);});
-
-/* SUBMIT */
-document.getElementById('submit-btn').addEventListener('click',function(){
-  var btn=this;
-  ans[9]=document.getElementById('q9txt').value.trim()||'—';
-  var fiyatVal=ans[8].length?ans[8][0]:'—';
-  var entry={
-    tarih:new Date().toLocaleString('tr-TR'),isim:userName,virgin:isVirgin,
-    yas:ans.age.length?ans.age[0]:'—',
-    kullaniyor:ans.usage.length?ans.usage[0]:'—',
-    sikluk:ans.freq.length?ans.freq[0]:'—',
-    rutin:ans[1].length?ans[1].join(', '):'—',mevcutUrun:ans[2].length?ans[2].join(', '):'—',
-    sikayet:ans[3].length?ans[3].join(', '):'—',problem:ans[4].length?ans[4].join(', '):'—',
-    his:ans[5].length?ans[5].join(', '):'—',icerik:ans[6].length?ans[6].join(', '):'—',
-    ikna:ans[7].length?ans[7].join(', '):'—',fiyat:fiyatVal,fiyatNum:priceMap[fiyatVal]||0,acik:ans[9]
-  };
-  localStorage.setItem('retuel_pending', JSON.stringify(entry));
-  btn.disabled=true;btn.innerHTML='<span class="spin spin-light"></span>gönderiliyor';
-  var attempts=0;
-  function tryPost(){
-    attempts++;
-    fetch('/api/responses',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(entry)})
-    .then(function(r){if(!r.ok)throw new Error();return r.json();})
-    .then(function(){localStorage.removeItem('retuel_pending');btn.disabled=false;btn.textContent='gönder';showPage('done');setTimeout(function(){resetSurveyForm();},200);})
-    .catch(function(){
-      if(attempts<3){setTimeout(tryPost,1000*attempts);}
-      else{btn.disabled=false;btn.classList.add('err-state');btn.textContent='bağlantı hatası — tekrar dene';setTimeout(function(){btn.classList.remove('err-state');btn.textContent='gönder';},4000);}
-    });
-  }
-  tryPost();
-});
-
-function resetSurveyForm(){
-  userName='';isVirgin=false;
-  ans={age:[],usage:[],freq:[],1:[],2:[],3:[],4:[],5:[],6:[],7:[],8:[],9:''};
-  document.querySelectorAll('.opt').forEach(function(el){el.classList.remove('sel');});
-  document.getElementById('nameInput').value='';document.getElementById('q9txt').value='';
-  document.querySelectorAll('.val-msg').forEach(function(el){el.classList.remove('show');});
-  document.querySelectorAll('.step').forEach(function(el){el.classList.remove('active','back');});
-  document.getElementById('step-0').classList.add('active');
-  document.getElementById('progWrap').style.display='none';
-}
-
-/* ADMIN SIDEBAR */
-document.querySelectorAll('.sidebar-item[data-view]').forEach(function(btn){
-  btn.addEventListener('click',function(){
-    document.querySelectorAll('.sidebar-item[data-view]').forEach(function(b){b.classList.remove('active');});
-    this.classList.add('active');var view=this.getAttribute('data-view');
-    document.querySelectorAll('.admin-view').forEach(function(v){v.classList.remove('active');});
-    document.getElementById('view-'+view).classList.add('active');
-  });
-});
-document.getElementById('sb-logout').addEventListener('click',function(){adminAuth=false;showPage('landing');});
-document.getElementById('sb-reset').addEventListener('click',function(){
-  if(!confirm('Tüm yanıtlar silinecek. Emin misin?'))return;
-  fetch('/api/responses',{method:'DELETE'}).then(function(){loadAdminData();}).catch(function(){alert('Silinemedi.');});
-});
-document.getElementById('sb-export').addEventListener('click',function(){exportCSV(allData);});
-
-/* LOAD ADMIN DATA */
-function loadAdminData(){
-  document.getElementById('ov-sub').textContent='Yükleniyor...';
-  fetch('/api/responses').then(function(r){return r.json();}).then(function(data){
-    allData=data;renderAll();startRefreshCountdown();
-  }).catch(function(){document.getElementById('ov-sub').textContent='Veri yüklenemedi.';});
-}
-function renderAll(){renderOverview();renderPersona();renderResponses();renderInsights();renderYasAnalysis();renderOpenEnds();renderAllData(allData);}
-
-/* HELPERS */
-function top1(arr){var m={};arr.forEach(function(v){if(v&&v!=='—')v.split(', ').forEach(function(x){m[x]=(m[x]||0)+1;});});var s=Object.entries(m).sort(function(a,b){return b[1]-a[1];});return s.length?s[0][0]:'—';}
-function avgNum(nums){var f=nums.filter(function(n){return n>0;});if(!f.length)return 0;return Math.round(f.reduce(function(a,b){return a+b;},0)/f.length);}
-function mkBar(data,key,label){
-  var m={};data.forEach(function(d){if(!d[key]||d[key]==='—')return;d[key].split(', ').forEach(function(v){m[v]=(m[v]||0)+1;});});
-  var s=Object.entries(m).sort(function(a,b){return b[1]-a[1];});if(!s.length)return '';var mx=s[0][1];
-  return '<div class="chart-card"><h4>'+esc(label)+'</h4>'+s.map(function(e,i){return '<div class="bar-row"><div class="bar-label">'+esc(e[0])+(i===0?'<span class="top-badge">en çok</span>':'')+'</div><div class="bar-track"><div class="bar-fill" style="width:'+Math.round(e[1]/mx*100)+'%"></div></div><div class="bar-num">'+e[1]+'</div></div>';}).join('')+'</div>';
-}
-function isNew(d){return Date.now()-(d.id||0)<86400000;}
-
-/* OVERVIEW */
-function renderOverview(){
-  var n=allData.length,virginCount=allData.filter(function(d){return d.virgin;}).length;
-  var ap=avgNum(allData.map(function(d){return d.fiyatNum||0;})),newToday=allData.filter(function(d){return isNew(d);}).length;
-  document.getElementById('ov-sub').textContent=n+' toplam yanıt · son güncelleme '+new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
-  document.getElementById('sg').innerHTML=
-    '<div class="stat-card"><div class="stat-label">toplam yanıt</div><div class="stat-val">'+n+'</div></div>'+
-    '<div class="stat-card"><div class="stat-label">bugün</div><div class="stat-val">'+newToday+'</div></div>'+
-    '<div class="stat-card"><div class="stat-label">hiç kullanmamış</div><div class="stat-val">'+virginCount+'</div></div>'+
-    '<div class="stat-card"><div class="stat-label">ort. fiyat eşiği</div><div class="stat-val'+(ap?'':' sm')+'">'+( ap?ap+'₺':'—')+'</div></div>';
-  var banner=document.getElementById('insightBanner');
-  if(n>=3){banner.style.display='block';var topYasOv=top1(allData.map(function(d){return d.yas;}));banner.innerHTML='<div class="ib-title">genel profil</div>'+(topYasOv&&topYasOv!=='—'?'En kalabalık yaş: <strong>'+esc(topYasOv)+'</strong>. ':'')+'En sık problem: <strong>'+esc(top1(allData.map(function(d){return d.problem;})))+'</strong>. Satın almada belirleyici: <strong>'+esc(top1(allData.map(function(d){return d.ikna;})))+'</strong>. Beklenen his: <strong>'+esc(top1(allData.map(function(d){return d.his;})))+'</strong>.'+(ap?' Ort. fiyat: <strong>'+ap+'₺</strong>.':'');}else{banner.style.display='none';}
-  renderTrend();
-  document.getElementById('cg').innerHTML=mkBar(allData,'problem','problemler')+mkBar(allData,'mevcutUrun','şu an ne kullanıyor')+mkBar(allData,'sikayet','mevcut şikayet / neden denemedi')+mkBar(allData,'his','his beklentisi')+mkBar(allData,'icerik','içerik hassasiyeti')+mkBar(allData,'ikna','satın alma ikna')+mkBar(allData,'rutin','rutin zamanı')+mkBar(allData,'fiyat','fiyat eşiği');
-}
-function renderTrend(){
-  if(!allData.length)return;var days=[];
-  for(var i=6;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);days.push({label:d.toLocaleDateString('tr-TR',{day:'2-digit',month:'2-digit'}),count:0});}
-  allData.forEach(function(d){if(!d.tarih)return;try{var p=d.tarih.split(' ')[0];days.forEach(function(day){if(day.label===p)day.count++;});}catch(e){}});
-  var mx=Math.max.apply(null,days.map(function(d){return d.count;}))||1;
-  document.getElementById('trend-card').style.display='block';
-  document.getElementById('trend-bars').innerHTML=days.map(function(d){var h=Math.max(2,Math.round(d.count/mx*56));return '<div class="trend-col">'+(d.count?'<div class="trend-num">'+d.count+'</div>':'<div class="trend-num" style="opacity:0">0</div>')+'<div class="trend-bar'+(d.count?' has-data':'')+'" style="height:'+h+'px"></div><div class="trend-day">'+d.label+'</div></div>';}).join('');
-}
-
-/* RESPONSES */
-var yasRank={'18–24':1,'25–32':2,'33–40':3,'41+':4};
-function renderResponses(){
-  var data=getFilteredData(),tbody=document.getElementById('resp-tbody');
-  if(!data.length){tbody.innerHTML='<tr><td colspan="8" style="text-align:center;padding:3rem;color:var(--mut)">Yanıt yok.</td></tr>';return;}
-  data.sort(function(a,b){
-    if(sortCol==='fiyat'){return sortDir*((a.fiyatNum||0)-(b.fiyatNum||0));}
-    if(sortCol==='tarih'){return sortDir*((a.id||0)-(b.id||0));}
-    if(sortCol==='yas'){return sortDir*((yasRank[a.yas]||9)-(yasRank[b.yas]||9));}
-    var av=a[sortCol]||'',bv=b[sortCol]||'';
-    return sortDir*(String(av).localeCompare(String(bv),'tr'));
-  });
-  tbody.innerHTML=data.map(function(d){
-    var rc=isNew(d)?'new-row':d.virgin?'virgin-row':'';
-    var starCls=isStarred(d.id)?'starred':'';
-    var isim=esc(d.isim||'—')+(isNew(d)?'<span class="badge-new-sm">yeni</span>':'')+(d.virgin?'<span class="badge-virgin-sm">ilk kez</span>':'');
-    return '<tr class="'+rc+'"><td><button class="star-btn '+starCls+'" onclick="event.stopPropagation();toggleStar('+d.id+',this)" title="Yıldızla">★</button></td><td onclick="openDetail('+d.id+')">'+isim+'</td><td onclick="openDetail('+d.id+')" style="color:var(--mut)">'+esc(d.yas||'—')+'</td><td onclick="openDetail('+d.id+')" style="color:var(--mut);white-space:nowrap">'+esc(d.tarih||'')+'</td><td onclick="openDetail('+d.id+')">'+esc(d.fiyat||'—')+'</td><td onclick="openDetail('+d.id+')">'+tagsHtml(d.problem)+'</td><td onclick="openDetail('+d.id+')">'+tagsHtml(d.ikna)+'</td><td onclick="openDetail('+d.id+')">'+esc(d.his||'—')+'</td></tr>';
-  }).join('');
-}
-function tagsHtml(str){if(!str||str==='—')return '<span style="color:var(--mut)">—</span>';return str.split(', ').map(function(x){return '<span class="tag-sm">'+esc(x)+'</span>';}).join('');}
-function getFilteredData(){return allData.filter(function(d){if(activeFilter==='virgin'&&!d.virgin)return false;if(activeFilter==='new'&&!isNew(d))return false;if(activeFilter==='starred'&&!isStarred(d.id))return false;if(searchQ&&JSON.stringify(d).toLowerCase().indexOf(searchQ.toLowerCase())===-1)return false;return true;});}
-document.querySelectorAll('.filter-btn[data-filter]').forEach(function(btn){btn.addEventListener('click',function(){document.querySelectorAll('.filter-btn[data-filter]').forEach(function(b){b.classList.remove('active');});this.classList.add('active');activeFilter=this.getAttribute('data-filter');renderResponses();});});
-document.getElementById('search-box').addEventListener('input',function(){searchQ=this.value.trim();renderResponses();});
-document.querySelectorAll('.resp-table th[data-sort]').forEach(function(th){th.addEventListener('click',function(){var col=this.getAttribute('data-sort');if(sortCol===col){sortDir*=-1;}else{sortCol=col;sortDir=-1;}renderResponses();});});
-
-/* DETAIL MODAL */
-function openDetail(id){
-  var d=allData.find(function(x){return x.id===id;});if(!d)return;
-  var labs={yas:'Yaş grubu',kullaniyor:'Düzenli kullanıyor mu',sikluk:'Kullanım sıklığı',rutin:'Rutin zamanı',mevcutUrun:'Şu an ne kullanıyor',sikayet:'Şikayet / neden denemedi',problem:'Problem',his:'His beklentisi',icerik:'İçerik hassasiyeti',ikna:'Satın alma ikna',fiyat:'Fiyat eşiği'};
-  var badges=(isNew(d)?'<span class="badge badge-new">yeni</span>':'')+(d.virgin?'<span class="badge badge-virgin">hiç kullanmamış</span>':'');
-  document.getElementById('detail-modal-content').innerHTML=
-    '<div class="dm-head"><div><div class="dm-name">'+esc(d.isim||'—')+'</div><div class="dm-date">'+esc(d.tarih)+'</div></div><button class="dm-close" onclick="closeDetail()">×</button></div>'+
-    (badges?'<div class="dm-badges">'+badges+'</div>':'')+
-    Object.entries(labs).map(function(e){var k=e[0],l=e[1];if(!d[k]||d[k]==='—')return '';var val=d[k].split(', ').map(function(x){return '<span class="tag-sm">'+esc(x)+'</span>';}).join('');return '<div class="dm-row"><span class="dm-key">'+esc(l)+'</span><span class="dm-val">'+val+'</span></div>';}).join('')+
-    (d.acik&&d.acik!=='—'?'<div class="dm-open">'+esc(d.acik)+'</div>':'');
-  document.getElementById('detail-modal-bg').classList.add('show');
-}
-function closeDetail(){document.getElementById('detail-modal-bg').classList.remove('show');}
-document.getElementById('detail-modal-bg').addEventListener('click',function(e){if(e.target===this)closeDetail();});
-
-/* INSIGHTS */
-function renderInsights(){
-  var n=allData.length;
-  if(!n){document.getElementById('seg-grid').innerHTML='<div class="empty-state"><p>Henüz veri yok.</p></div>';document.getElementById('cross-tab-wrap').innerHTML='';return;}
-  var users=allData.filter(function(d){return !d.virgin;}),virgins=allData.filter(function(d){return d.virgin;});
-  document.getElementById('seg-grid').innerHTML=mkSegCard('Kullananlar ('+users.length+')',users)+mkSegCard('Hiç kullanmayanlar ('+virgins.length+')',virgins);
-  var pg={'Düşük (≤200₺)':allData.filter(function(d){return d.fiyatNum>0&&d.fiyatNum<=200;}),'Orta (200–350₺)':allData.filter(function(d){return d.fiyatNum===275;}),'Yüksek (≥350₺)':allData.filter(function(d){return d.fiyatNum>=350;})};
-  var iv={};allData.forEach(function(d){if(d.ikna&&d.ikna!=='—')d.ikna.split(', ').forEach(function(x){iv[x]=(iv[x]||0)+1;});});
-  var topIkna=Object.entries(iv).sort(function(a,b){return b[1]-a[1];}).slice(0,4).map(function(e){return e[0];});
-  var ctHtml='<div class="cross-tab"><h4>fiyat segmenti × ikna faktörü</h4>';
-  Object.entries(pg).forEach(function(p){if(!p[1].length)return;var m={};p[1].forEach(function(d){if(d.ikna&&d.ikna!=='—')d.ikna.split(', ').forEach(function(x){m[x]=(m[x]||0)+1;});});var mx=Math.max.apply(null,Object.values(m).concat([1]));ctHtml+='<div class="ct-row"><div class="ct-label">'+esc(p[0])+'<br><span style="font-size:10px;color:var(--mut)">'+p[1].length+' kişi</span></div><div class="ct-bars">'+topIkna.map(function(k){var v=m[k]||0;return '<div class="ct-bar-row"><div class="ct-bar-label">'+esc(k)+'</div><div class="ct-bar-track"><div class="ct-bar-fill" style="width:'+Math.round(v/mx*100)+'%"></div></div><div class="ct-bar-num">'+v+'</div></div>';}).join('')+'</div></div>';});
-  document.getElementById('cross-tab-wrap').innerHTML=ctHtml+'</div>';
-}
-function renderYasAnalysis(){
-  var wrap=document.getElementById('yas-analysis');
-  if(!allData.length){wrap.innerHTML='';return;}
-  var yasOrder=['18–24','25–32','33–40','41+'];
-  var groups={};yasOrder.forEach(function(y){groups[y]=allData.filter(function(d){return d.yas===y;});});
-  var hasAny=yasOrder.some(function(y){return groups[y].length>0;});
-  if(!hasAny){wrap.innerHTML='';return;}
-  var total=allData.length;
-  var html='<div class="cross-tab"><h4>yaş grubu dağılımı</h4>';
-  yasOrder.forEach(function(y){var g=groups[y];if(!g.length)return;var pct=Math.round(g.length/total*100);html+='<div class="ct-bar-row" style="margin-bottom:5px"><div class="ct-bar-label">'+esc(y)+'</div><div class="ct-bar-track"><div class="ct-bar-fill" style="width:'+pct+'%"></div></div><div class="ct-bar-num">'+g.length+' · '+pct+'%</div></div>';});
-  html+='</div>';
-  html+='<div class="segment-grid" style="margin-top:1rem">';
-  yasOrder.forEach(function(y){
-    var g=groups[y];if(!g.length)return;
-    var ap=avgNum(g.map(function(d){return d.fiyatNum||0;}));
-    html+='<div class="segment-card"><div class="segment-title">'+esc(y)+' · '+g.length+' kişi</div>'+
-      '<div class="segment-stat"><span class="segment-key">Ort. fiyat</span><span class="segment-val">'+(ap?ap+'₺':'—')+'</span></div>'+
-      '<div class="segment-stat"><span class="segment-key">Sık problem</span><span class="segment-val">'+esc(top1(g.map(function(d){return d.problem;})))+'</span></div>'+
-      '<div class="segment-stat"><span class="segment-key">İkna faktörü</span><span class="segment-val">'+esc(top1(g.map(function(d){return d.ikna;})))+'</span></div>'+
-      '<div class="segment-stat"><span class="segment-key">His beklentisi</span><span class="segment-val">'+esc(top1(g.map(function(d){return d.his;})))+'</span></div>'+
-    '</div>';
-  });
-  html+='</div>';
-  wrap.innerHTML=html;
-}
-function mkSegCard(title,data){
-  if(!data.length)return '<div class="segment-card"><div class="segment-title">'+esc(title)+'</div><p style="font-size:12px;color:var(--mut)">Veri yok</p></div>';
-  var ap=avgNum(data.map(function(d){return d.fiyatNum||0;}));
-  return '<div class="segment-card"><div class="segment-title">'+esc(title)+'</div><div class="segment-stat"><span class="segment-key">Ort. fiyat</span><span class="segment-val">'+(ap?ap+'₺':'—')+'</span></div><div class="segment-stat"><span class="segment-key">En sık problem</span><span class="segment-val">'+esc(top1(data.map(function(d){return d.problem;})))+'</span></div><div class="segment-stat"><span class="segment-key">İkna faktörü</span><span class="segment-val">'+esc(top1(data.map(function(d){return d.ikna;})))+'</span></div><div class="segment-stat"><span class="segment-key">His beklentisi</span><span class="segment-val">'+esc(top1(data.map(function(d){return d.his;})))+'</span></div></div>';
-}
-
-/* OPEN ENDS */
-function renderOpenEnds(){
-  var items=allData.filter(function(d){return d.acik&&d.acik!=='—';}).sort(function(a,b){return (b.id||0)-(a.id||0);});
-  document.getElementById('open-ends-list').innerHTML=items.length?items.map(function(d){
-    var ctx=[d.yas&&d.yas!=='—'?d.yas:'',d.fiyat&&d.fiyat!=='—'?d.fiyat:'',d.virgin?'ilk kez':''].filter(Boolean);
-    return '<div class="open-end-item">'+
-      '<div class="oe-header">'+
-        '<div class="oe-meta">'+
-          '<div class="open-end-name">'+esc(d.isim||'—')+'</div>'+
-          (ctx.length?'<div class="oe-ctx">'+ctx.map(function(c){return '<span class="oe-ctx-tag">'+esc(c)+'</span>';}).join('')+'</div>':'')+
-        '</div>'+
-        '<button class="copy-btn" onclick="copyOE(this,'+d.id+')">kopyala</button>'+
-      '</div>'+
-      '<div class="open-end-text">'+esc(d.acik)+'</div>'+
-    '</div>';
-  }).join(''):'<div class="empty-state"><h3>Henüz yanıt yok.</h3></div>';
-}
-function copyOE(btn,id){
-  var d=allData.find(function(x){return x.id===id;});if(!d)return;
-  navigator.clipboard.writeText(d.acik).then(function(){
-    btn.textContent='kopyalandı ✓';btn.classList.add('copied');
-    setTimeout(function(){btn.textContent='kopyala';btn.classList.remove('copied');},1800);
-  }).catch(function(){});
-}
-
-/* PERSONA CARD */
-function renderPersona(){
-  var card=document.getElementById('persona-card');
-  if(allData.length<5){card.style.display='none';return;}
-  var topYas=top1(allData.map(function(d){return d.yas;}));
-  var topKull=top1(allData.map(function(d){return d.kullaniyor;}));
-  var topProb=top1(allData.map(function(d){return d.problem;}));
-  var topIkna=top1(allData.map(function(d){return d.ikna;}));
-  var ap=avgNum(allData.map(function(d){return d.fiyatNum||0;}));
-  var tags=[
-    topYas&&topYas!=='—'?topYas:'',
-    topKull==='Evet'?'düzenli kullanıcı':topKull==='Hayır'?'ara sıra kullanıcı':'',
-    topProb&&topProb!=='—'?'problem: '+topProb:'',
-    topIkna&&topIkna!=='—'?'ikna: '+topIkna:'',
-    ap?'ort. '+ap+'₺':''
-  ].filter(Boolean);
-  card.style.display='block';
-  card.innerHTML='<div class="persona-label">tipik katılımcı · '+allData.length+' yanıt</div>'+
-    '<div class="persona-tags">'+tags.map(function(t){return '<span class="persona-tag">'+esc(t)+'</span>';}).join('')+'</div>';
-}
-
-/* CSV */
-function exportCSV(data){
-  if(!data.length){alert('Henüz veri yok.');return;}
-  var h=['tarih','isim','virgin','yas','kullaniyor','sikluk','rutin','mevcutUrun','sikayet','problem','his','icerik','ikna','fiyat','acik'];
-  var l=['Tarih','İsim','Hiç Kullanmamış','Yaş Grubu','Düzenli Kullanıyor mu','Kullanım Sıklığı','Rutin Zamanı','Şu An Ne Kullanıyor','Şikayet','Problem','His Beklentisi','İçerik Hassasiyeti','Satın Alma İkna','Fiyat Eşiği','Mükemmel Lip Balm'];
-  var csv=[l.join(',')];
-  data.forEach(function(d){csv.push(h.map(function(k){var v=(d[k]!==undefined?d[k]:'').toString().replace(/"/g,'""');return '"'+v+'"';}).join(','));});
-  var blob=new Blob(['\uFEFF'+csv.join('\n')],{type:'text/csv;charset=utf-8;'});
-  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='retuel-'+new Date().toISOString().slice(0,10)+'.csv';a.click();URL.revokeObjectURL(a.href);
-}
-
-function exportJSON(data){
-  if(!data.length){alert('Henüz veri yok.');return;}
-  var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='retuel-'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(a.href);
-}
-
-function renderAllData(data){
-  var wrap=document.getElementById('alldata-table-wrap');
-  if(!data.length){wrap.innerHTML='<div class="empty-state"><h3>Henüz veri yok</h3></div>';return;}
-  var keys=Object.keys(data[0]).filter(function(k){return k!=='id';});
-  var html='<table class="resp-table"><thead><tr>'+keys.map(function(k){return '<th>'+k+'</th>';}).join('')+'</tr></thead><tbody>';
-  data.forEach(function(d){
-    html+='<tr>'+keys.map(function(k){
-      var v=d[k]!==undefined?d[k]:'—';
-      if(k==='virgin')v=v?'evet':'hayır';
-      return '<td style="white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:ellipsis" title="'+String(v).replace(/"/g,'&quot;')+'">'+v+'</td>';
-    }).join('')+'</tr>';
-  });
-  html+='</tbody></table>';
-  wrap.innerHTML=html;
-}
-
-document.getElementById('alldata-csv').addEventListener('click',function(){exportCSV(allData);});
-document.getElementById('alldata-json').addEventListener('click',function(){exportJSON(allData);});
-
-/* ACCORDION */
-document.querySelectorAll('[data-acc]').forEach(function(item){
-  item.querySelector('.ing-acc-header').addEventListener('click',function(){
-    var isOpen=item.classList.contains('open');
-    document.querySelectorAll('[data-acc]').forEach(function(i){i.classList.remove('open');});
-    if(!isOpen)item.classList.add('open');
-  });
-});
-
-/* SCROLL REVEAL */
-(function(){
-  var obs=new IntersectionObserver(function(entries){
-    entries.forEach(function(e){
-      if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}
-    });
-  },{threshold:0.12,rootMargin:'0px 0px -40px 0px'});
-  document.querySelectorAll('.reveal').forEach(function(el){obs.observe(el);});
-})();
-
-/* YEDEK YÜKLE */
-document.getElementById('sb-import-file').addEventListener('change',function(e){
-  var file=e.target.files[0];if(!file)return;
-  var reader=new FileReader();
-  reader.onload=function(ev){
-    var records=[];
-    try{
-      if(file.name.endsWith('.json')){
-        records=JSON.parse(ev.target.result);
-      } else {
-        var lines=ev.target.result.split('\n').filter(function(l){return l.trim();});
-        var headers=lines[0].split(',').map(function(h){return h.replace(/^"|"$/g,'').trim();});
-        var keyMap={'Tarih':'tarih','İsim':'isim','Hiç Kullanmamış':'virgin','Yaş Grubu':'yas','Düzenli Kullanıyor mu':'kullaniyor','Kullanım Sıklığı':'sikluk','Rutin Zamanı':'rutin','Şu An Ne Kullanıyor':'mevcutUrun','Şikayet':'sikayet','Problem':'problem','His Beklentisi':'his','İçerik Hassasiyeti':'icerik','Satın Alma İkna':'ikna','Fiyat Eşiği':'fiyat','Mükemmel Lip Balm':'acik'};
-        for(var i=1;i<lines.length;i++){
-          var vals=lines[i].match(/(".*?"|[^,]+)/g)||[];
-          var obj={};
-          headers.forEach(function(h,j){var k=keyMap[h]||h;obj[k]=(vals[j]||'').replace(/^"|"$/g,'').trim();});
-          obj.virgin=obj.virgin==='true'||obj.virgin==='evet'||obj.virgin===true;
-          records.push(obj);
-        }
-      }
-    }catch(err){alert('Dosya okunamadı.');return;}
-    if(!records.length){alert('Kayıt bulunamadı.');return;}
-    if(!confirm(records.length+' kayıt yüklenecek. Devam?'))return;
-    var done=0,fail=0;
-    records.forEach(function(r){
-      fetch('/api/responses',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(r)})
-      .then(function(res){if(!res.ok)throw new Error();done++;if(done+fail===records.length){alert('Yüklendi: '+done+' kayıt'+(fail?' | Hata: '+fail:''));loadAdminData();}})
-      .catch(function(){fail++;if(done+fail===records.length){alert('Yüklendi: '+done+' kayıt | Hata: '+fail);loadAdminData();}});
-    });
-  };
-  reader.readAsText(file,'UTF-8');
-  e.target.value='';
-});
-</script>
+<script src="js/game.js"></script>
 </body>
 </html>
