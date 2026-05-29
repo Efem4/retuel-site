@@ -1,3 +1,4 @@
 .wrangler/
 *.log
 node_modules/
+.git/
