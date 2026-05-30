@@ -3,10 +3,13 @@
 // ═══════════════════════════════════════════
 function saveGame(silent = false){
   const data = {
-    v:4, money, day, gameTime, dailyIncome,
+    v:5, money, day, gameTime, dailyIncome,
     dailyIncomeRoom, dailyIncomeAmenity, dailyIncomeReception,
     FLOORS, COLS, prices,
-    grid: grid.map(f => f.map(c => ({t:c.type, d:c.dirty?1:0, b:c.broken?1:0}))),
+    grid: grid.map(f => f.map(c => ({
+      t:c.type, d:c.dirty?1:0, b:c.broken?1:0,
+      ia:c.isAnchor?1:0, aC:c.anchorC, aF:c.anchorF,
+    }))),
     staff: staffArr.map(s => ({type:s.type, col:s.col, floor:s.floor})),
   };
   localStorage.setItem(SAVE_KEY, JSON.stringify(data));
@@ -22,7 +25,13 @@ function loadGame(){
     dailyIncomeAmenity = d.dailyIncomeAmenity || 0;
     dailyIncomeReception = d.dailyIncomeReception || 0;
     FLOORS = d.FLOORS; COLS = d.COLS; prices = {...BASE_PRICES, ...(d.prices || {})};
-    grid = d.grid.map(f => f.map(c => ({type:c.t, dirty:c.d===1, broken:c.b===1, occupied:false, gId:null, sId:null})));
+    const isV5 = d.v >= 5;
+    grid = d.grid.map(f => f.map(c => ({
+      type:c.t, dirty:c.d===1, broken:c.b===1, occupied:false, gId:null, sId:null,
+      isAnchor: isV5 ? c.ia===1 : true,   // eski v4 kayıtları hep anchor
+      anchorC:  isV5 ? (c.aC ?? null) : null,
+      anchorF:  isV5 ? (c.aF ?? null) : null,
+    })));
     staffArr = []; guestIdCtr = 0; staffIdCtr = 0;
     for(const s of (d.staff || [])){
       staffArr.push({id:staffIdCtr++, type:s.type, col:s.col, floor:s.floor,

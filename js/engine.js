@@ -12,6 +12,7 @@ function calcDemandScore(){
   let dirtyRooms = 0, brokenRooms = 0, cleanFreeRooms = 0;
   for(let f = 0; f < FLOORS; f++) for(let c = 0; c < COLS; c++){
     const cell = grid[f][c];
+    if(!cell.isAnchor) continue; // uzantı hücreler sayılmaz
     if(![T.STANDARD, T.DELUXE, T.SUITE].includes(cell.type)) continue;
     if(cell.dirty)          dirtyRooms++;
     else if(cell.broken)    brokenRooms++;

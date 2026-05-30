@@ -78,3 +78,17 @@ const GUEST_TYPES = {
 
 const HUNGER_THR = 0.32, FATIGUE_THR = 0.25, ENTERTAIN_THR = 0.28;
 const AMENITY_CAP = {[T.RESTAURANT]:3, [T.BAR]:2, [T.POOL]:5};
+
+// Kaç hücre yer kapladığı (w=genişlik, h=yükseklik — şimdilik hep h:1)
+const CELL_SIZE = {
+  [T.CORRIDOR]:   {w:1, h:1},
+  [T.ELEVATOR]:   {w:1, h:1},
+  [T.STAIRS]:     {w:1, h:1},
+  [T.RECEPTION]:  {w:2, h:1},
+  [T.STANDARD]:   {w:1, h:1},
+  [T.DELUXE]:     {w:2, h:1},
+  [T.SUITE]:      {w:3, h:1},
+  [T.RESTAURANT]: {w:3, h:1},
+  [T.BAR]:        {w:2, h:1},
+  [T.POOL]:       {w:3, h:1},
+};

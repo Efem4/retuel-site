@@ -3,7 +3,11 @@
 // ═══════════════════════════════════════════
 function walkable(c, f){
   if(c < 0 || c >= COLS || f < 0 || f >= FLOORS) return false;
-  return grid[f][c].type !== T.EMPTY;
+  const cell = grid[f][c];
+  if(cell.type === T.EMPTY) return false;
+  // Uzantı hücreler kendi başına yürünebilir değil — pathfinding sadece anchor'a gider
+  if(!cell.isAnchor) return false;
+  return true;
 }
 
 function nbrs(c, f){
