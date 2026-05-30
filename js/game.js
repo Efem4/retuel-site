@@ -314,7 +314,8 @@ const canvas=document.getElementById('gameCanvas');
 const ctx=canvas.getContext('2d');
 function resizeCanvas(){
   const area=document.getElementById('canvas-area');
-  const areaW=area?area.clientWidth:window.innerWidth;
+  // clientWidth is 0 before first layout — fall back to window.innerWidth
+  const areaW=(area&&area.clientWidth>0)?area.clientWidth:window.innerWidth;
   if(MOBILE){
     CW=Math.max(18,Math.floor((areaW-ML_MIN*2)/(COLS+GHOST*2)));
     CH=Math.max(14,Math.round(CW*0.68));
@@ -323,7 +324,7 @@ function resizeCanvas(){
   const idealML=Math.floor((areaW-cellsW)/2);
   ML=Math.max(ML_MIN,idealML);
   const naturalH=(FLOORS+GHOST_FLOORS)*CH+MB;
-  const availH=area?area.clientHeight:naturalH;
+  const availH=(area&&area.clientHeight>0)?area.clientHeight:naturalH;
   TOPPAD=Math.max(0,availH-naturalH);
   canvas.width=Math.max(areaW,ML+cellsW+ML_MIN);
   canvas.height=naturalH+TOPPAD;
@@ -1647,6 +1648,8 @@ const loaded=loadGame();
 if(!loaded) buildGrid();
 resizeCanvas(); setTool('corridor'); updatePriceUI(); centerView();
 if(loaded) toast(`💾 Kayıt yüklendi — Gün ${day}`);
+// Re-run after first paint so area.clientWidth is correct
+requestAnimationFrame(()=>{resizeCanvas();centerView();});
 
 function loop(ts){
   const rawDt=Math.min((ts-lastTs)/1000,.12);
