@@ -48,6 +48,7 @@ html, body { height:100%; background:var(--bg); color:var(--ink); font-family:'N
   border-bottom:1px solid var(--line);
   box-shadow:0 6px 22px rgba(120,80,55,.09);
   padding:0 16px; display:flex; align-items:center; gap:12px; flex-shrink:0; height:64px;
+  justify-content:center;
 }
 .brand { display:flex; align-items:center; gap:9px; margin-right:2px; }
 .brand .logo {
@@ -62,7 +63,7 @@ html, body { height:100%; background:var(--bg); color:var(--ink); font-family:'N
 /* stat groups + hairline dividers */
 .tb-group { display:flex; align-items:center; gap:7px; }
 .tb-div { width:1px; height:30px; background:var(--line); flex-shrink:0; }
-.tb-spacer { flex:1; }
+.tb-spacer { display:none; }
 
 .stat {
   display:flex; flex-direction:column; align-items:center; gap:2px;
@@ -128,6 +129,10 @@ html, body { height:100%; background:var(--bg); color:var(--ink); font-family:'N
 .tbtn:hover .cost { background:var(--cream-0); }
 .tbtn .sc { font-size:9px; background:rgba(43,163,124,.16); color:var(--green); border-radius:8px; padding:2px 7px; margin-left:5px; font-weight:800; }
 .tbtn.active .cost { color:var(--coral-deep); background:rgba(255,255,255,.55); }
+.staff-row { display:flex; gap:4px; margin-bottom:4px; }
+.staff-row .tbtn { flex:1; margin-bottom:0; }
+.fire-btn { flex-shrink:0; padding:9px 13px; background:var(--cream-0); border:1px solid var(--line-soft); color:var(--ink-mute); cursor:pointer; border-radius:11px; font-size:13px; transition:all .14s; box-shadow:0 1px 1px rgba(120,80,55,.04); }
+.fire-btn:hover { background:#fff0ee; border-color:#f3b8a8; color:var(--coral); }
 
 /* PRICE PANEL (legacy/desktop) */
 .price-row { display:flex; align-items:center; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--line-soft); font-size:11px; }
@@ -198,7 +203,7 @@ html, body { height:100%; background:var(--bg); color:var(--ink); font-family:'N
 #toast.show { opacity:1; }
 
 /* ───────────────────────── BOTTOM BAR ───────────────────────── */
-#mob-bar { display:flex; height:56px; align-items:center; background:linear-gradient(180deg,#fffdfb,#fff4ec); border-top:1px solid var(--line); padding:0 10px; gap:7px; overflow-x:auto; flex-shrink:0; -webkit-overflow-scrolling:touch; scrollbar-width:none; box-shadow:0 -5px 20px rgba(120,80,55,.1); }
+#mob-bar { display:flex; height:56px; align-items:center; justify-content:center; background:linear-gradient(180deg,#fffdfb,#fff4ec); border-top:1px solid var(--line); padding:0 10px; gap:7px; overflow-x:auto; flex-shrink:0; -webkit-overflow-scrolling:touch; scrollbar-width:none; box-shadow:0 -5px 20px rgba(120,80,55,.1); }
 #mob-bar::-webkit-scrollbar { display:none; }
 .mob-btn { flex-shrink:0; padding:8px 12px; background:var(--cream-0); border:1px solid var(--line-soft); color:var(--ink-soft); border-radius:12px; font-size:15px; cursor:pointer; white-space:nowrap; -webkit-tap-highlight-color:transparent; transition:all .14s; box-shadow:0 2px 0 var(--line); }
 .mob-btn:active { background:var(--coral-wash); transform:translateY(2px); box-shadow:0 0 0 var(--line); }
@@ -226,6 +231,7 @@ html, body { height:100%; background:var(--bg); color:var(--ink); font-family:'N
   .stat .val { font-size:13px; } .stat .lbl { font-size:7px; }
   .tb-div, #day-bar-wrap, #btnSave, #btnNewGame, #btnAddFloor, #saveFlash { display:none; }
   .tb-spacer { display:none; }
+  #topbar { justify-content:flex-start; }
   .speed-group { margin-left:auto; }
   #canvas-area { flex:1; overflow-x:hidden; overflow-y:auto; -webkit-overflow-scrolling:touch; display:flex; align-items:flex-end; justify-content:center; }
   #toast { bottom:74px; }
@@ -333,10 +339,22 @@ html, body { height:100%; background:var(--bg); color:var(--ink); font-family:'N
       </div>
       <div class="section">
         <div class="section-title">Personel (günlük maaş)</div>
-        <button class="tbtn" onclick="hireStaff('receptionist')">💁 Resepsiyoncu <span class="cost">$300/g</span><span class="sc" id="sc-receptionist"></span></button>
-        <button class="tbtn" onclick="hireStaff('maid')">🧹 Temizlikçi   <span class="cost">$200/g</span><span class="sc" id="sc-maid"></span></button>
-        <button class="tbtn" onclick="hireStaff('waiter')">🤵 Garson       <span class="cost">$250/g</span><span class="sc" id="sc-waiter"></span></button>
-        <button class="tbtn" onclick="hireStaff('repairman')">🔧 Tamirci      <span class="cost">$350/g</span><span class="sc" id="sc-repairman"></span></button>
+        <div class="staff-row">
+          <button class="tbtn" onclick="hireStaff('receptionist')">💁 Resepsiyoncu <span class="cost">$300/g</span><span class="sc" id="sc-receptionist"></span></button>
+          <button class="fire-btn" onclick="fireStaff('receptionist')" title="İşten çıkar">✕</button>
+        </div>
+        <div class="staff-row">
+          <button class="tbtn" onclick="hireStaff('maid')">🧹 Temizlikçi <span class="cost">$200/g</span><span class="sc" id="sc-maid"></span></button>
+          <button class="fire-btn" onclick="fireStaff('maid')" title="İşten çıkar">✕</button>
+        </div>
+        <div class="staff-row">
+          <button class="tbtn" onclick="hireStaff('waiter')">🤵 Garson <span class="cost">$250/g</span><span class="sc" id="sc-waiter"></span></button>
+          <button class="fire-btn" onclick="fireStaff('waiter')" title="İşten çıkar">✕</button>
+        </div>
+        <div class="staff-row">
+          <button class="tbtn" onclick="hireStaff('repairman')">🔧 Tamirci <span class="cost">$350/g</span><span class="sc" id="sc-repairman"></span></button>
+          <button class="fire-btn" onclick="fireStaff('repairman')" title="İşten çıkar">✕</button>
+        </div>
       </div>
 
       <!-- STAR HINT -->
@@ -440,6 +458,18 @@ html, body { height:100%; background:var(--bg); color:var(--ink); font-family:'N
   </div>
 </div>
 
-<script src="js/game.js"></script>
+<script src="js/constants.js"></script>
+<script src="js/state.js"></script>
+<script src="js/grid.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/save.js"></script>
+<script src="js/canvas.js"></script>
+<script src="js/pathfinding.js"></script>
+<script src="js/guests.js"></script>
+<script src="js/staff.js"></script>
+<script src="js/draw.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/input.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>
