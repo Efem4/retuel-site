@@ -7,8 +7,7 @@ const GHOST_FLOORS = 2;
 let TOPPAD = 0;          // extra sky filled above the building so the cycle covers the whole screen
 let _nightF = 0;         // current night strength (0 day → ~0.9 night); fades the buildable grid hints
 const EXPAND_COL_COST = 4000;
-const ML_MIN = MOBILE ? 34 : 60;
-let ML = ML_MIN;
+const ML = MOBILE ? 34 : 60;
 const MB = MOBILE ? 20 : 38;
 let CW = MOBILE ? 24 : 56;
 let CH = MOBILE ? 17 : 42;
@@ -93,8 +92,6 @@ let guestIdCtr=0, staffIdCtr=0;
 let nextSpawn=6, dailyIncome=0;
 let dailyIncomeRoom=0, dailyIncomeAmenity=0, dailyIncomeReception=0;
 let demandScore=1;
-let reputation=0.5;   // 0‒1: birikimli itibar skoru
-let occupancyRate=0;  // 0‒1: anlık doluluk oranı
 let hovCell=null, toastTimer=null;
 let autoSaveTimer=60;
 let prices={...BASE_PRICES};
@@ -191,13 +188,9 @@ function calcDemandScore(){
   for(const rt of rTypes) pricePressure+=((prices[rt]||BASE_PRICES[rt])/BASE_PRICES[rt])-1;
   pricePressure/=rTypes.length;
 
-  // İtibar uzun vadeli talebi taşır
-  const repBonus = reputation * 0.25;
-
   const score=1
     +hotelStars*0.25
-    +avgHappy*0.30
-    +repBonus
+    +avgHappy*0.40
     +Math.min(cleanFreeRooms,10)*0.04
     -dirtyRooms*0.06
     -brokenRooms*0.10
@@ -206,39 +199,12 @@ function calcDemandScore(){
   return Math.max(0.2, score);
 }
 
-// Anlık doluluk oranı
-function calcOccupancyRate(){
-  let occupied=0, total=0;
-  for(let f=0;f<FLOORS;f++) for(let c=0;c<COLS;c++){
-    const cell=grid[f][c];
-    if([T.STANDARD,T.DELUXE,T.SUITE].includes(cell.type)){
-      total++;
-      if(cell.occupied) occupied++;
-    }
-  }
-  return total>0?occupied/total:0;
-}
-
-// Misafir ayrılırken itibarı güncelle
-function updateReputation(finalHappy){
-  // İyi ayrılış → itibar yükselir (1'e doğru yavaşlar)
-  // Kötü ayrılış → itibar düşer (0'a doğru yavaşlar)
-  let delta=0;
-  if(finalHappy>0.65)       delta=+0.04*(1-reputation);
-  else if(finalHappy<0.30)  delta=-0.06*reputation;
-  reputation=Math.max(0,Math.min(1,reputation+delta));
-
-  // Milestone toastları
-  if(reputation>=0.80&&reputation-delta<0.80) toast('⭐ İtibarınız yükseliyor! Misafirler sizi seviyor.');
-  if(reputation<=0.25&&reputation-delta>0.25) toast('📉 İtibar düşüyor! Servis kalitesine dikkat edin.');
-}
-
 // ═══════════════════════════════════════════
 //  SAVE / LOAD
 // ═══════════════════════════════════════════
 function saveGame(silent=false){
   const data={
-    v:4, money, day, gameTime, dailyIncome, dailyIncomeRoom, dailyIncomeAmenity, dailyIncomeReception, reputation, FLOORS, COLS, prices,
+    v:4, money, day, gameTime, dailyIncome, dailyIncomeRoom, dailyIncomeAmenity, dailyIncomeReception, FLOORS, COLS, prices,
     grid:grid.map(f=>f.map(c=>({t:c.type,d:c.dirty?1:0,b:c.broken?1:0}))),
     staff:staffArr.map(s=>({type:s.type,col:s.col,floor:s.floor})),
   };
@@ -252,7 +218,6 @@ function loadGame(){
     const d=JSON.parse(raw); if(!d.v||d.v<4) return false;
     money=d.money; day=d.day; gameTime=d.gameTime||0; dailyIncome=d.dailyIncome||0;
     dailyIncomeRoom=d.dailyIncomeRoom||0; dailyIncomeAmenity=d.dailyIncomeAmenity||0; dailyIncomeReception=d.dailyIncomeReception||0;
-    reputation=d.reputation??0.5;
     FLOORS=d.FLOORS; COLS=d.COLS; prices={...BASE_PRICES,...(d.prices||{})};
     grid=d.grid.map(f=>f.map(c=>({type:c.t,dirty:c.d===1,broken:c.b===1,occupied:false,gId:null,sId:null})));
     staffArr=[]; guestIdCtr=0; staffIdCtr=0;
@@ -313,27 +278,25 @@ function updatePriceUI(){
 const canvas=document.getElementById('gameCanvas');
 const ctx=canvas.getContext('2d');
 function resizeCanvas(){
-  const area=document.getElementById('canvas-area');
-  // clientWidth is 0 before first layout — fall back to window.innerWidth
-  const areaW=(area&&area.clientWidth>0)?area.clientWidth:window.innerWidth;
   if(MOBILE){
-    CW=Math.max(18,Math.floor((areaW-ML_MIN*2)/(COLS+GHOST*2)));
-    CH=Math.max(14,Math.round(CW*0.68));
+    CW = Math.max(18, Math.floor((window.innerWidth - ML - 2) / (COLS + GHOST*2)));
+    CH = Math.max(14, Math.round(CW * 0.68));
   }
-  const cellsW=(COLS+GHOST*2)*CW;
-  const idealML=Math.floor((areaW-cellsW)/2);
-  ML=Math.max(ML_MIN,idealML);
+  const area=document.getElementById('canvas-area');
   const naturalH=(FLOORS+GHOST_FLOORS)*CH+MB;
-  const availH=(area&&area.clientHeight>0)?area.clientHeight:naturalH;
-  TOPPAD=Math.max(0,availH-naturalH);
-  canvas.width=Math.max(areaW,ML+cellsW+ML_MIN);
-  canvas.height=naturalH+TOPPAD;
+  const availH=area?area.clientHeight:naturalH;
+  TOPPAD=Math.max(0, availH-naturalH);
+  canvas.width=ML+(COLS+GHOST*2)*CW+2; canvas.height=naturalH+TOPPAD;
 }
 function centerView(){
   const area=document.getElementById('canvas-area'); if(!area) return;
-  const cellsW=(COLS+GHOST*2)*CW;
-  const buildingCenter=ML+cellsW/2;
-  area.scrollLeft=Math.max(0,buildingCenter-area.clientWidth/2);
+  let minC=COLS,maxC=0,any=false;
+  for(let f=0;f<FLOORS;f++)for(let c=0;c<COLS;c++){
+    if(grid[f]&&grid[f][c]&&grid[f][c].type!==T.EMPTY){any=true;if(c<minC)minC=c;if(c>maxC)maxC=c;}
+  }
+  if(!any){minC=0;maxC=COLS-1;}
+  const cx=ML+(GHOST+(minC+maxC)/2+0.5)*CW;
+  area.scrollLeft=Math.max(0,cx-area.clientWidth/2);
 }
 window.addEventListener('resize',()=>{resizeCanvas();centerView();});
 function cpos(col,floor){ return {x:ML+(GHOST+col)*CW, y:TOPPAD+GHOST_FLOORS*CH+(FLOORS-1-floor)*CH}; }
@@ -515,9 +478,8 @@ function getSpawnableTypes(){
 function guestAcceptsPrice(roomType,priceMult){
   const base=BASE_PRICES[roomType]||90;
   const priceRatio=(prices[roomType]||base)/base;
-  // VIP/business toleransı + itibar bonusu (yüksek itibar → %20'ye kadar ek tolerans)
-  const repTolerance=priceMult*(1+reputation*0.20);
-  const effectiveRatio=priceRatio/repTolerance;
+  // VIP/business (yüksek priceMult) → fiyata daha toleranslı
+  const effectiveRatio=priceRatio/priceMult;
   return Math.random()<Math.max(0.15,Math.min(1,1/effectiveRatio));
 }
 
@@ -607,8 +569,7 @@ function updateGuest(g,dt){
         g.state='in_room'; g.stayT=g.stayFor;
         g.happy=Math.min(1,g.happy+0.12);
         if(!g.incomeEarned){
-          const repMult=0.80+reputation*0.40; // itibar 0→%80, itibar 1→%120 oda geliri
-          earn((prices[g.romType]||0)*td.priceMult*repMult,'room');
+          earn((prices[g.romType]||0)*td.priceMult,'room');
           g.incomeEarned=true;
         }
       } else {
@@ -675,7 +636,6 @@ function updateGuest(g,dt){
     }
 
     case 'checking_out':{
-      updateReputation(g.happy); // misafir ayrılırken itibarı güncelle
       const cell=grid[g.romF]?.[g.romC];
       if(cell&&cell.gId===g.id){cell.occupied=false;cell.dirty=true;cell.gId=null;}
       const p=bfs(g.col,g.floor,Math.floor(COLS/2),0);
@@ -940,9 +900,7 @@ function drawDecor(x,y,type){
       break;
     }
     case T.RECEPTION:{
-      // Counter
-      ctx.fillStyle='#3fae6e';ctx.fillRect(x+3,Math.round(y+CH*.45),CW-6,Math.round(CH*.22));
-      ctx.fillStyle='#6bd49a';ctx.fillRect(x+3,Math.round(y+CH*.45),CW-6,Math.round(CH*.06));
+      drawReceptionCounter(x,y);
       // Monitor glow
       ctx.fillStyle='rgba(80,180,255,.3)';ctx.fillRect(Math.round(x+CW/2-6),Math.round(y+CH*.18),12,Math.round(CH*.22));
       ctx.fillStyle='rgba(80,200,255,.15)';ctx.fillRect(Math.round(x+CW/2-7),Math.round(y+CH*.17),14,Math.round(CH*.24));
@@ -954,14 +912,12 @@ function drawDecor(x,y,type){
         ctx.fillStyle='#dd8b7a';ctx.fillRect(Math.round(x+CW*ox),y+4,Math.round(CW*.26),Math.round(CH*.38));
         ctx.fillStyle='rgba(255,80,80,.15)';ctx.fillRect(Math.round(x+CW*ox)+1,y+5,Math.round(CW*.24),Math.round(CH*.2));
       });
-      // Floor
-      ctx.fillStyle='#f2d2cb';ctx.fillRect(x,y+CH-Math.round(CH*.22),CW,Math.round(CH*.22));
+      // Serving counter (waiter stands behind this)
+      drawRestaurantCounter(x,y);
       break;
     }
     case T.BAR:{
-      // Counter
-      ctx.fillStyle='#cb9c5c';ctx.fillRect(x+3,y+CH-Math.round(CH*.3),CW-6,Math.round(CH*.3));
-      ctx.fillStyle='#b9863f';ctx.fillRect(x+3,y+CH-Math.round(CH*.3),CW-6,Math.round(CH*.06));
+      drawBarCounter(x,y);
       // Bottles with glow
       const nb=Math.max(2,Math.round(CW/14));
       for(let i=0;i<nb;i++){
@@ -990,6 +946,26 @@ function drawDecor(x,y,type){
   }
 }
 
+// ── Counter fronts: redrawn ON TOP of stationed staff so they read as standing behind the desk/bar ──
+function drawReceptionCounter(x,y){
+  ctx.fillStyle='#3fae6e';ctx.fillRect(x+3,Math.round(y+CH*.45),CW-6,Math.round(CH*.22));
+  ctx.fillStyle='#6bd49a';ctx.fillRect(x+3,Math.round(y+CH*.45),CW-6,Math.round(CH*.06));
+}
+function drawBarCounter(x,y){
+  ctx.fillStyle='#cb9c5c';ctx.fillRect(x+3,y+CH-Math.round(CH*.3),CW-6,Math.round(CH*.3));
+  ctx.fillStyle='#b9863f';ctx.fillRect(x+3,y+CH-Math.round(CH*.3),CW-6,Math.round(CH*.06));
+}
+function drawRestaurantCounter(x,y){
+  ctx.fillStyle='#dd8b7a';ctx.fillRect(x+3,y+CH-Math.round(CH*.24),CW-6,Math.round(CH*.24));
+  ctx.fillStyle='#ecb0a2';ctx.fillRect(x+3,y+CH-Math.round(CH*.24),CW-6,Math.round(CH*.05));
+}
+// voff = vertical nudge (fraction of CH) so the body tucks behind its counter
+const COUNTER_STATION={
+  [T.RECEPTION]:  {voff:-0.12, front:drawReceptionCounter},
+  [T.BAR]:        {voff: 0.12, front:drawBarCounter},
+  [T.RESTAURANT]: {voff: 0.14, front:drawRestaurantCounter},
+};
+
 function drawNeedBars(g){
   const{x,y}=cpos(g.col,g.floor);
   const px=x+CW/2+(g.ox||0), py=y+CH/2+(g.oy||0);
@@ -1002,17 +978,17 @@ function drawNeedBars(g){
   ctx.fillStyle='#f39c12';ctx.fillRect(bx,by+(bH+gap)*2,bW*g.entertainment,bH);
 }
 
-function drawEntity(e,bodyColor,icon){
+function drawEntity(e,bodyColor,icon,voff=0,scale=1){
   const{x,y}=cpos(e.col,e.floor);
-  const px=x+CW/2+(e.ox||0),py=y+CH/2+(e.oy||0);
+  const px=x+CW/2+(e.ox||0),py=y+CH/2+(e.oy||0)+voff;
   const big=!MOBILE;
-  const hR=big?5.4:3.7;            // big chibi head (dominant)
+  const hR=(big?5.4:3.7)*scale;    // big chibi head (dominant)
   const bw=hR*1.05, bh=hR*0.95;    // small rounded body
   const skin='#FCE0C4';
   // gentle bob: livelier while walking, calm while resting
   const now=performance.now()/1000;
   if(e.bobP===undefined) e.bobP=Math.random()*6.28;
-  const resting=(e.state==='in_room'||e.state==='sleeping');
+  const resting=(e.state==='in_room'||e.state==='sleeping'||e.state==='at_desk'||e.state==='at_service');
   const bob=Math.sin(now*(resting?2.2:5.6)+e.bobP)*(resting?0.4:(big?1.1:0.6));
   const baseTop=py+hR*0.30;
   const bodyTop=baseTop+bob;
@@ -1334,8 +1310,21 @@ function render(){
   }
 
   if(tool!=='cursor'&&tool!=='demolish') drawBuildPreview();
-  for(const g of guests){drawEntity(g,g.color,guestIcon(g));}
+  // Stationed counter staff (receptionist at desk, waiter at venue) draw BEHIND guests,
+  // then their counter is redrawn on top so they sit *behind* it and never cover guests.
+  const _stationed=[], _roaming=[];
   for(const s of staffArr){
+    const atStation=(s.type==='receptionist'&&s.state==='at_desk')||(s.type==='waiter'&&s.state==='at_service');
+    (atStation?_stationed:_roaming).push(s);
+  }
+  for(const s of _stationed){
+    const cs=COUNTER_STATION[grid[s.floor]?.[s.col]?.type];
+    const icon=s.type==='receptionist'?'💁':'🤵';
+    drawEntity(s,STAFF_DEF[s.type].color,icon, cs?cs.voff*CH:0, 0.9);
+    if(cs){const{x,y}=cpos(s.col,s.floor); cs.front(x,y);}
+  }
+  for(const g of guests){drawEntity(g,g.color,guestIcon(g));}
+  for(const s of _roaming){
     const icon=s.type==='maid'?'🧹':s.type==='receptionist'?'💁':s.type==='repairman'?'🔧':'🤵';
     drawEntity(s,STAFF_DEF[s.type].color,icon);
   }
@@ -1359,16 +1348,6 @@ function updateUI(){
   const avg=guests.length?guests.reduce((a,g)=>a+g.happy,0)/guests.length:0;
   const hIcon=avg>0.7?'😊':avg>0.45?'😐':'😠';
   document.getElementById('s-happy').textContent=guests.length?hIcon+' '+Math.round(avg*100)+'%':'—';
-  // İtibar ve doluluk — HTML'de element varsa göster
-  const repEl=document.getElementById('s-reputation');
-  if(repEl){
-    const ri=Math.round(reputation*100);
-    const rIcon=reputation>0.75?'🌟':reputation>0.45?'⭐':'💫';
-    repEl.textContent=rIcon+' '+ri+'%';
-  }
-  const occEl=document.getElementById('s-occupancy');
-  if(occEl) occEl.textContent=Math.round(occupancyRate*100)+'%';
-
   updateGuestPanel();
 }
 
@@ -1648,8 +1627,6 @@ const loaded=loadGame();
 if(!loaded) buildGrid();
 resizeCanvas(); setTool('corridor'); updatePriceUI(); centerView();
 if(loaded) toast(`💾 Kayıt yüklendi — Gün ${day}`);
-// Re-run after first paint so area.clientWidth is correct
-requestAnimationFrame(()=>{resizeCanvas();centerView();});
 
 function loop(ts){
   const rawDt=Math.min((ts-lastTs)/1000,.12);
@@ -1663,9 +1640,8 @@ function loop(ts){
   }
   prevStars=hotelStars;
 
-  // ── ENGINE: her frame hesapla ──
+  // ── ENGINE: her frame demand hesapla ──
   demandScore=calcDemandScore();
-  occupancyRate=calcOccupancyRate();
 
   // Day change
   if(gameTime>=DAY_LEN){
